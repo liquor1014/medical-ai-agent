@@ -1,0 +1,74 @@
+# 医疗文件检索与报表统计 Agent — 本地基础设施
+# 用法：docker compose -f infra/docker-compose.yml up -d
+
+name: medical-ai-agent
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: medical-ai-postgres
+    environment:
+      POSTGRES_DB: medical_ai
+      POSTGRES_USER: medical
+      POSTGRES_PASSWORD: medical123
+      TZ: Asia/Shanghai
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      - ./migrations/002_model_call_log.sql:/docker-entrypoint-initdb.d/02-model-call-log.sql:ro
+      - ./migrations/003_app_user.sql:/docker-entrypoint-initdb.d/03-app-user.sql:ro
+      - ./seed.sql:/docker-entrypoint-initdb.d/04-seed.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U medical -d medical_ai"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: medical-ai-qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+      - ./qdrant:/qdrant/snapshots
+
+  minio:
+    image: minio/minio:latest
+    container_name: medical-ai-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: medical-ai-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pg_data:
+  qdrant_data:
+  minio_data:
+  redis_data:

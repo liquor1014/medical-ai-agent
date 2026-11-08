@@ -1,0 +1,100 @@
+{"id":"R01","type":"retrieval","tenant_id":"eval-bench","question":"采购金额超过多少万元需要提交院务会审议？","gold_chunk_ids":[90001]}
+{"id":"R02","type":"retrieval","tenant_id":"eval-bench","question":"各科室应该在什么时候编制次年度采购计划？","gold_chunk_ids":[90002]}
+{"id":"R03","type":"retrieval","tenant_id":"eval-bench","question":"临时采购申请需要谁签字并在几个工作日内提交？","gold_chunk_ids":[90002]}
+{"id":"R04","type":"retrieval","tenant_id":"eval-bench","question":"常规采购至少需要几家供应商比价？","gold_chunk_ids":[90003]}
+{"id":"R05","type":"retrieval","tenant_id":"eval-bench","question":"单一来源采购需要在院内公示几个工作日？","gold_chunk_ids":[90003]}
+{"id":"R06","type":"retrieval","tenant_id":"eval-bench","question":"物资验收合格后多少日内完成付款？","gold_chunk_ids":[90004]}
+{"id":"R07","type":"retrieval","tenant_id":"eval-bench","question":"质保金按合同金额的多少比例预留？","gold_chunk_ids":[90004]}
+{"id":"R08","type":"retrieval","tenant_id":"eval-bench","question":"高值耗材的单价标准是多少元以上？","gold_chunk_ids":[90005]}
+{"id":"R09","type":"retrieval","tenant_id":"eval-bench","question":"高值耗材使用后多长时间内完成扫码计费？","gold_chunk_ids":[90005]}
+{"id":"R10","type":"retrieval","tenant_id":"eval-bench","question":"高值耗材是否实行零库存管理？","gold_chunk_ids":[90006]}
+{"id":"R11","type":"retrieval","tenant_id":"eval-bench","question":"跟台耗材术后多长时间内完成退库？","gold_chunk_ids":[90007]}
+{"id":"R12","type":"retrieval","tenant_id":"eval-bench","question":"耗材验收需要哪三方到场？","gold_chunk_ids":[90008]}
+{"id":"R13","type":"retrieval","tenant_id":"eval-bench","question":"有效期不足几个月的耗材不得入库？","gold_chunk_ids":[90009]}
+{"id":"R14","type":"retrieval","tenant_id":"eval-bench","question":"验收合格后多长时间内完成上架？","gold_chunk_ids":[90010]}
+{"id":"R15","type":"retrieval","tenant_id":"eval-bench","question":"冷链试剂的储运温度要求是多少？","gold_chunk_ids":[90011]}
+{"id":"R16","type":"retrieval","tenant_id":"eval-bench","question":"冷冻品种的储运温度需要在多少度以下？","gold_chunk_ids":[90011]}
+{"id":"R17","type":"retrieval","tenant_id":"eval-bench","question":"冷链运输的温度记录仪多久记录一次温度？","gold_chunk_ids":[90012]}
+{"id":"R18","type":"retrieval","tenant_id":"eval-bench","question":"运输途中温度超标累计多久需要隔离待检？","gold_chunk_ids":[90013]}
+{"id":"R19","type":"retrieval","tenant_id":"eval-bench","question":"消毒供应中心包含哪几个区域？","gold_chunk_ids":[90014]}
+{"id":"R20","type":"retrieval","tenant_id":"eval-bench","question":"压力蒸汽灭菌的温度和时间参数是多少？","gold_chunk_ids":[90015]}
+{"id":"R21","type":"retrieval","tenant_id":"eval-bench","question":"棉布包装的无菌物品有效期是多久？","gold_chunk_ids":[90016]}
+{"id":"R22","type":"retrieval","tenant_id":"eval-bench","question":"无纺布包装的无菌物品存放有效期是多少天？","gold_chunk_ids":[90016]}
+{"id":"R23","type":"retrieval","tenant_id":"eval-bench","question":"SPD 供应链一体化采用什么结算模式？","gold_chunk_ids":[90017]}
+{"id":"R24","type":"retrieval","tenant_id":"eval-bench","question":"SPD 补货响应时间不超过多久？","gold_chunk_ids":[90018]}
+{"id":"R25","type":"retrieval","tenant_id":"eval-bench","question":"月度对账应该在什么时候完成？","gold_chunk_ids":[90019]}
+{"id":"R26","type":"retrieval","tenant_id":"eval-bench","question":"哪些医疗器械需要实施 UDI 唯一标识管理？","gold_chunk_ids":[90020]}
+{"id":"R27","type":"retrieval","tenant_id":"eval-bench","question":"UDI 数据保存期限为产品有效期后几年？","gold_chunk_ids":[90021]}
+{"id":"R28","type":"retrieval","tenant_id":"eval-bench","question":"植入类器械的 UDI 数据保存不少于多少年？","gold_chunk_ids":[90021]}
+{"id":"R29","type":"retrieval","tenant_id":"eval-bench","question":"发生不良事件后多长时间内完成批次追溯？","gold_chunk_ids":[90022]}
+{"id":"R30","type":"retrieval","tenant_id":"eval-bench","question":"供应商准入需要提供哪些证照？","gold_chunk_ids":[90023]}
+{"id":"R31","type":"retrieval","tenant_id":"eval-bench","question":"供应商绩效评价包含哪些维度和分值？","gold_chunk_ids":[90025]}
+{"id":"R32","type":"retrieval","tenant_id":"eval-bench","question":"到货及时率低于多少会暂停新订单？","gold_chunk_ids":[90026]}
+{"id":"R33","type":"retrieval","tenant_id":"eval-bench","question":"应急储备物资分为哪几类？","gold_chunk_ids":[90027]}
+{"id":"R34","type":"retrieval","tenant_id":"eval-bench","question":"应急储备量按多少天日常消耗量确定？","gold_chunk_ids":[90028]}
+{"id":"R35","type":"retrieval","tenant_id":"eval-bench","question":"危险化学品如何存放和管理？","gold_chunk_ids":[90030]}
+{"id":"R36","type":"retrieval","tenant_id":"eval-bench","question":"危险废物转移联单需要保存几年？","gold_chunk_ids":[90032]}
+{"id":"R37","type":"retrieval","tenant_id":"eval-bench","question":"检验试剂损耗率超过多少需要分析原因？","gold_chunk_ids":[90035]}
+{"id":"R38","type":"retrieval","tenant_id":"eval-bench","question":"氧气瓶存放距离明火不少于多少米？","gold_chunk_ids":[90037]}
+{"id":"R39","type":"retrieval","tenant_id":"eval-bench","question":"医用气体管道系统多久检测一次？","gold_chunk_ids":[90038]}
+{"id":"R40","type":"retrieval","tenant_id":"eval-bench","question":"液氧储罐液位低于多少会触发补液申请？","gold_chunk_ids":[90039]}
+{"id":"S01","type":"sql","tenant_id":"hospital-demo","question":"查询医院的名称、等级和所在地区","gold_sql":"SELECT name, level, region FROM hospital"}
+{"id":"S02","type":"sql","tenant_id":"hospital-demo","question":"列出全部科室名称","gold_sql":"SELECT name FROM department ORDER BY id"}
+{"id":"S03","type":"sql","tenant_id":"hospital-demo","question":"查询物资名称和单价，按单价从高到低排序","gold_sql":"SELECT name, unit_price FROM item ORDER BY unit_price DESC"}
+{"id":"S04","type":"sql","tenant_id":"hospital-demo","question":"统计各物资的库存总量，返回物资名称和库存量","gold_sql":"SELECT i.name, SUM(inv.qty) AS qty FROM inventory inv JOIN item i ON inv.item_id = i.id GROUP BY i.name"}
+{"id":"S05","type":"sql","tenant_id":"hospital-demo","question":"统计各物资的库存金额（库存量乘以单价），返回物资名称和金额","gold_sql":"SELECT i.name, SUM(inv.qty * i.unit_price) AS amount FROM inventory inv JOIN item i ON inv.item_id = i.id GROUP BY i.name"}
+{"id":"S06","type":"sql","tenant_id":"hospital-demo","question":"统计各科室的消耗总金额，返回科室名称和金额","gold_sql":"SELECT d.name, SUM(c.amount) AS amount FROM consumption c JOIN department d ON c.dept_id = d.id GROUP BY d.name"}
+{"id":"S07","type":"sql","tenant_id":"hospital-demo","question":"统计各科室的消耗总数量，返回科室名称和数量","gold_sql":"SELECT d.name, SUM(c.qty) AS qty FROM consumption c JOIN department d ON c.dept_id = d.id GROUP BY d.name"}
+{"id":"S08","type":"sql","tenant_id":"hospital-demo","question":"统计各物资的消耗总金额，返回物资名称和金额","gold_sql":"SELECT i.name, SUM(c.amount) AS amount FROM consumption c JOIN item i ON c.item_id = i.id GROUP BY i.name"}
+{"id":"S09","type":"sql","tenant_id":"hospital-demo","question":"统计各供应商的采购总额，返回供应商名称和金额","gold_sql":"SELECT s.name, SUM(po.amount) AS amount FROM purchase_order po JOIN supplier s ON po.supplier_id = s.id GROUP BY s.name"}
+{"id":"S10","type":"sql","tenant_id":"hospital-demo","question":"统计各供应商的采购订单数量，返回供应商名称和订单数","gold_sql":"SELECT s.name, COUNT(*) AS cnt FROM purchase_order po JOIN supplier s ON po.supplier_id = s.id GROUP BY s.name"}
+{"id":"S11","type":"sql","tenant_id":"hospital-demo","question":"查询履约率高于90的供应商名称和履约率","gold_sql":"SELECT name, fulfillment_rate FROM supplier WHERE fulfillment_rate > 90"}
+{"id":"S12","type":"sql","tenant_id":"hospital-demo","question":"按月份统计采购金额，返回月份和金额","gold_sql":"SELECT to_char(order_date, 'YYYY-MM') AS month, SUM(amount) AS amount FROM purchase_order GROUP BY month ORDER BY month"}
+{"id":"S13","type":"sql","tenant_id":"hospital-demo","question":"按月份统计采购订单数量，返回月份和订单数","gold_sql":"SELECT to_char(order_date, 'YYYY-MM') AS month, COUNT(*) AS cnt FROM purchase_order GROUP BY month ORDER BY month"}
+{"id":"S14","type":"sql","tenant_id":"hospital-demo","question":"已完成状态的采购订单总金额是多少？","gold_sql":"SELECT SUM(amount) AS amount FROM purchase_order WHERE status = '已完成'"}
+{"id":"S15","type":"sql","tenant_id":"hospital-demo","question":"已下单状态的采购订单总金额是多少？","gold_sql":"SELECT SUM(amount) AS amount FROM purchase_order WHERE status = '已下单'"}
+{"id":"S16","type":"sql","tenant_id":"hospital-demo","question":"统计各订单状态的采购订单数量，返回状态和订单数","gold_sql":"SELECT status, COUNT(*) AS cnt FROM purchase_order GROUP BY status"}
+{"id":"S17","type":"sql","tenant_id":"hospital-demo","question":"采购金额最高的订单来自哪个供应商，金额是多少？","gold_sql":"SELECT s.name, po.amount FROM purchase_order po JOIN supplier s ON po.supplier_id = s.id ORDER BY po.amount DESC LIMIT 1"}
+{"id":"S18","type":"sql","tenant_id":"hospital-demo","question":"发票的总金额是多少？","gold_sql":"SELECT SUM(amount) AS amount FROM invoice"}
+{"id":"S19","type":"sql","tenant_id":"hospital-demo","question":"已开票状态的发票金额合计是多少？","gold_sql":"SELECT SUM(amount) AS amount FROM invoice WHERE status = '已开票'"}
+{"id":"S20","type":"sql","tenant_id":"hospital-demo","question":"统计各供应商的发票金额，返回供应商名称和金额","gold_sql":"SELECT s.name, SUM(i.amount) AS amount FROM invoice i JOIN supplier s ON i.supplier_id = s.id GROUP BY s.name"}
+{"id":"S21","type":"sql","tenant_id":"hospital-demo","question":"查询检验试剂类物资的名称和单价","gold_sql":"SELECT name, unit_price FROM item WHERE category = '检验试剂'"}
+{"id":"S22","type":"sql","tenant_id":"hospital-demo","question":"防护耗材类物资的库存总量是多少？","gold_sql":"SELECT SUM(inv.qty) AS qty FROM inventory inv JOIN item i ON inv.item_id = i.id WHERE i.category = '防护耗材'"}
+{"id":"S23","type":"sql","tenant_id":"hospital-demo","question":"单价最高的物资名称和单价是多少？","gold_sql":"SELECT name, unit_price FROM item ORDER BY unit_price DESC LIMIT 1"}
+{"id":"S24","type":"sql","tenant_id":"hospital-demo","question":"所有物资的平均单价是多少？","gold_sql":"SELECT AVG(unit_price) AS avg_price FROM item"}
+{"id":"S25","type":"sql","tenant_id":"hospital-demo","question":"物资一共有多少种？","gold_sql":"SELECT COUNT(*) AS cnt FROM item"}
+{"id":"S26","type":"sql","tenant_id":"hospital-demo","question":"外科的消耗总金额是多少？","gold_sql":"SELECT SUM(c.amount) AS amount FROM consumption c JOIN department d ON c.dept_id = d.id WHERE d.name = '外科'"}
+{"id":"S27","type":"sql","tenant_id":"hospital-demo","question":"内科的消耗总金额是多少？","gold_sql":"SELECT SUM(c.amount) AS amount FROM consumption c JOIN department d ON c.dept_id = d.id WHERE d.name = '内科'"}
+{"id":"S28","type":"sql","tenant_id":"hospital-demo","question":"2026年10月的采购总额是多少？","gold_sql":"SELECT SUM(amount) AS amount FROM purchase_order WHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-11-01'"}
+{"id":"S29","type":"sql","tenant_id":"hospital-demo","question":"2026年11月的采购金额是多少？","gold_sql":"SELECT SUM(amount) AS amount FROM purchase_order WHERE order_date >= DATE '2026-11-01' AND order_date < DATE '2026-12-01'"}
+{"id":"S30","type":"sql","tenant_id":"hospital-demo","question":"2026年10月的消耗总额是多少？","gold_sql":"SELECT SUM(amount) AS amount FROM consumption WHERE consume_date >= DATE '2026-10-01' AND consume_date < DATE '2026-11-01'"}
+{"id":"S31","type":"sql","tenant_id":"hospital-demo","question":"N95口罩的库存总量是多少？","gold_sql":"SELECT SUM(inv.qty) AS qty FROM inventory inv JOIN item i ON inv.item_id = i.id WHERE i.name = 'N95口罩'"}
+{"id":"S32","type":"sql","tenant_id":"hospital-demo","question":"库存量低于1000的物资有哪些，返回物资名称和库存量","gold_sql":"SELECT i.name, SUM(inv.qty) AS qty FROM inventory inv JOIN item i ON inv.item_id = i.id GROUP BY i.name HAVING SUM(inv.qty) < 1000"}
+{"id":"S33","type":"sql","tenant_id":"hospital-demo","question":"统计各科室的N95口罩消耗数量，返回科室名称和数量","gold_sql":"SELECT d.name, SUM(c.qty) AS qty FROM consumption c JOIN department d ON c.dept_id = d.id JOIN item i ON c.item_id = i.id WHERE i.name = 'N95口罩' GROUP BY d.name"}
+{"id":"S34","type":"sql","tenant_id":"hospital-demo","question":"供应商一共有多少家？","gold_sql":"SELECT COUNT(*) AS cnt FROM supplier"}
+{"id":"S35","type":"sql","tenant_id":"hospital-demo","question":"全部采购订单的总金额是多少？","gold_sql":"SELECT SUM(amount) AS amount FROM purchase_order"}
+{"id":"S36","type":"sql","tenant_id":"hospital-demo","question":"全部消耗记录的总金额是多少？","gold_sql":"SELECT SUM(amount) AS amount FROM consumption"}
+{"id":"S37","type":"sql","tenant_id":"hospital-demo","question":"消耗金额最高的科室是哪个，金额是多少？","gold_sql":"SELECT d.name, SUM(c.amount) AS amount FROM consumption c JOIN department d ON c.dept_id = d.id GROUP BY d.name ORDER BY SUM(c.amount) DESC LIMIT 1"}
+{"id":"S38","type":"sql","tenant_id":"hospital-demo","question":"统计各发票状态的发票数量，返回状态和数量","gold_sql":"SELECT status, COUNT(*) AS cnt FROM invoice GROUP BY status"}
+{"id":"S39","type":"sql","tenant_id":"hospital-demo","question":"待开票状态的发票金额合计是多少？","gold_sql":"SELECT SUM(amount) AS amount FROM invoice WHERE status = '待开票'"}
+{"id":"S40","type":"sql","tenant_id":"hospital-demo","question":"统计各物资的库存批次数量，返回物资名称和批次数","gold_sql":"SELECT i.name, COUNT(inv.batch_no) AS batches FROM inventory inv JOIN item i ON inv.item_id = i.id GROUP BY i.name"}
+{"id":"A01","type":"answer","tenant_id":"eval-bench","question":"高值耗材使用后多长时间内需要完成扫码计费？","expected_keywords":["24小时|24 小时"]}
+{"id":"A02","type":"answer","tenant_id":"eval-bench","question":"冷链试剂运输时温度记录仪多久记录一次温度？","expected_keywords":["5分钟|5 分钟"]}
+{"id":"A03","type":"answer","tenant_id":"eval-bench","question":"运输途中温度超标累计多长时间需要隔离待检？","expected_keywords":["30分钟|30 分钟"]}
+{"id":"A04","type":"answer","tenant_id":"eval-bench","question":"压力蒸汽灭菌的温度和时间分别是多少？","expected_keywords":["134","4分钟|4 分钟"]}
+{"id":"A05","type":"answer","tenant_id":"eval-bench","question":"棉布包装的无菌物品有效期是多久？","expected_keywords":["7天|7 天"]}
+{"id":"A06","type":"answer","tenant_id":"eval-bench","question":"无纺布包装的无菌物品存放有效期是多久？","expected_keywords":["180天|180 天"]}
+{"id":"A07","type":"answer","tenant_id":"eval-bench","question":"SPD 补货响应时间不超过多长时间？","expected_keywords":["4小时|4 小时"]}
+{"id":"A08","type":"answer","tenant_id":"eval-bench","question":"SPD 月度对账账实差异超过多少需要专项核查？","expected_keywords":["0.5%"]}
+{"id":"A09","type":"answer","tenant_id":"eval-bench","question":"植入类器械的 UDI 数据需要保存多少年？","expected_keywords":["30年|30 年"]}
+{"id":"A10","type":"answer","tenant_id":"eval-bench","question":"供应商绩效评价中质量维度的分值是多少？","expected_keywords":["40分|40 分"]}
+{"id":"A11","type":"answer","tenant_id":"eval-bench","question":"供应商到货及时率低于多少会被暂停新订单？","expected_keywords":["90%"]}
+{"id":"A12","type":"answer","tenant_id":"eval-bench","question":"应急储备量按照多少天的日常消耗量确定？","expected_keywords":["30天|30 天"]}
+{"id":"A13","type":"answer","tenant_id":"eval-bench","question":"氧气瓶存放距离明火不少于多少米？","expected_keywords":["10米|10 米"]}
+{"id":"A14","type":"answer","tenant_id":"eval-bench","question":"液氧储罐液位低于多少会触发补液申请？","expected_keywords":["30%"]}
+{"id":"A15","type":"answer","tenant_id":"eval-bench","question":"检验试剂损耗率超过多少需要分析原因？","expected_keywords":["3%"]}
+{"id":"A16","type":"answer","tenant_id":"eval-bench","question":"危险化学品在存放管理上有什么要求？","expected_keywords":["双人双锁"]}
+{"id":"A17","type":"answer","tenant_id":"eval-bench","question":"供应商资质多久复审一次？","expected_keywords":["每年|一年"]}
+{"id":"A18","type":"answer","tenant_id":"eval-bench","question":"单一来源采购需要在院内公示几个工作日？","expected_keywords":["5个工作日|5 个工作日"]}
+{"id":"A19","type":"answer","tenant_id":"eval-bench","question":"质保金按照合同金额的多少比例预留？","expected_keywords":["5%"]}
+{"id":"A20","type":"answer","tenant_id":"eval-bench","question":"高值耗材是否实行零库存管理？","expected_keywords":["零库存"]}

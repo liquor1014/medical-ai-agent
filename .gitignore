@@ -1,0 +1,38 @@
+# Java
+backend/target/
+*.class
+
+# 日志
+logs/
+*.log
+
+# Python
+ai-service/.venv/
+*.egg-info/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Node
+web/node_modules/
+web/dist/
+
+# 环境变量与密钥
+.env
+*.local
+
+# 数据与模型权重（不入库）
+data/docs/*
+!data/docs/.gitkeep
+data/synthetic/*
+!data/synthetic/.gitkeep
+training/output/
+*.safetensors
+*.bin
+
+# IDE
+.idea/
+.vscode/
+*.iml
+.DS_Store

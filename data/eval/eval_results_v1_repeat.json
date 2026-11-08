@@ -1,0 +1,2966 @@
+{
+  "meta": {
+    "run_id": "20261108-224653",
+    "created_at": "2026-11-08 22:47:57",
+    "dataset": "E:\\ai-test\\medical-ai-agent\\data\\eval\\eval_v1.jsonl",
+    "dataset_sha256": "c6b384933664378ecb8a509e3ec01cece1d95608002a47302abfdd32a9c67d5f",
+    "dataset_items": 100,
+    "top_k": 5,
+    "tenant_ids": [
+      "eval-bench",
+      "hospital-demo"
+    ],
+    "python": "3.11.9",
+    "model_routes": {
+      "chat": "deepseek,mock",
+      "nl2sql": "deepseek,mock",
+      "report": "deepseek,mock"
+    },
+    "models_seen": [
+      "deepseek"
+    ]
+  },
+  "summary": {
+    "item_count": 100,
+    "recall_at_5": 1.0,
+    "retrieval_hit_rate_at_5": 1.0,
+    "sql_execution_accuracy": 1.0,
+    "answer_accuracy": 1.0,
+    "answer_mean_keyword_coverage": 1.0,
+    "diagnostic_recall_at_5_by_keyword_overlap": 1.0,
+    "routing_accuracy": {
+      "sql_expected_nl2sql": 1.0,
+      "answer_expected_retrieval": 1.0,
+      "retrieval_expected_retrieval": 1.0
+    },
+    "latency_ms": {
+      "count": 100,
+      "mean": 635.1,
+      "p50": 851.8,
+      "p95": 1317.1,
+      "max": 2154.0
+    },
+    "latency_by_type_ms": {
+      "retrieval": {
+        "count": 40,
+        "mean": 29.9,
+        "p50": 31.0,
+        "p95": 31.9,
+        "max": 32.1
+      },
+      "sql": {
+        "count": 40,
+        "mean": 1062.8,
+        "p50": 996.5,
+        "p95": 1590.7,
+        "max": 2154.0
+      },
+      "answer": {
+        "count": 20,
+        "mean": 990.1,
+        "p50": 972.9,
+        "p95": 1321.1,
+        "max": 1444.9
+      }
+    },
+    "passed_by_type": {
+      "retrieval": 40,
+      "sql": 40,
+      "answer": 20
+    },
+    "failed_by_type": {
+      "retrieval": 0,
+      "sql": 0,
+      "answer": 0
+    }
+  },
+  "items": [
+    {
+      "id": "R01",
+      "type": "retrieval",
+      "question": "采购金额超过多少万元需要提交院务会审议？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 18.9,
+      "detail": {
+        "retrieved_ids": [
+          90001,
+          90035,
+          90002,
+          90034,
+          90019
+        ],
+        "gold_ids": [
+          90001
+        ],
+        "hit_ids": [
+          90001
+        ],
+        "diagnostic_overlap_ids": [
+          90001,
+          90035,
+          90002,
+          90034,
+          90019
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R02",
+      "type": "retrieval",
+      "question": "各科室应该在什么时候编制次年度采购计划？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 31.8,
+      "detail": {
+        "retrieved_ids": [
+          90002,
+          90018,
+          90001,
+          90008,
+          90003
+        ],
+        "gold_ids": [
+          90002
+        ],
+        "hit_ids": [
+          90002
+        ],
+        "diagnostic_overlap_ids": [
+          90002,
+          90018,
+          90001,
+          90008,
+          90003
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R03",
+      "type": "retrieval",
+      "question": "临时采购申请需要谁签字并在几个工作日内提交？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 31.2,
+      "detail": {
+        "retrieved_ids": [
+          90002,
+          90007,
+          90003,
+          90001,
+          90039
+        ],
+        "gold_ids": [
+          90002
+        ],
+        "hit_ids": [
+          90002
+        ],
+        "diagnostic_overlap_ids": [
+          90002,
+          90007,
+          90003,
+          90001,
+          90039
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R04",
+      "type": "retrieval",
+      "question": "常规采购至少需要几家供应商比价？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 31.0,
+      "detail": {
+        "retrieved_ids": [
+          90003,
+          90026,
+          90025,
+          90024,
+          90023
+        ],
+        "gold_ids": [
+          90003
+        ],
+        "hit_ids": [
+          90003
+        ],
+        "diagnostic_overlap_ids": [
+          90003,
+          90026,
+          90025,
+          90024,
+          90023
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R05",
+      "type": "retrieval",
+      "question": "单一来源采购需要在院内公示几个工作日？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 32.0,
+      "detail": {
+        "retrieved_ids": [
+          90003,
+          90002,
+          90007,
+          90017,
+          90006
+        ],
+        "gold_ids": [
+          90003
+        ],
+        "hit_ids": [
+          90003
+        ],
+        "diagnostic_overlap_ids": [
+          90003,
+          90002,
+          90007,
+          90017,
+          90006
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R06",
+      "type": "retrieval",
+      "question": "物资验收合格后多少日内完成付款？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 30.6,
+      "detail": {
+        "retrieved_ids": [
+          90004,
+          90010,
+          90007,
+          90005,
+          90029
+        ],
+        "gold_ids": [
+          90004
+        ],
+        "hit_ids": [
+          90004
+        ],
+        "diagnostic_overlap_ids": [
+          90004,
+          90010,
+          90007,
+          90005,
+          90029
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R07",
+      "type": "retrieval",
+      "question": "质保金按合同金额的多少比例预留？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 30.4,
+      "detail": {
+        "retrieved_ids": [
+          90004,
+          90001
+        ],
+        "gold_ids": [
+          90004
+        ],
+        "hit_ids": [
+          90004
+        ],
+        "diagnostic_overlap_ids": [
+          90004,
+          90001
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R08",
+      "type": "retrieval",
+      "question": "高值耗材的单价标准是多少元以上？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 30.8,
+      "detail": {
+        "retrieved_ids": [
+          90005,
+          90006,
+          90001,
+          90027,
+          90009
+        ],
+        "gold_ids": [
+          90005
+        ],
+        "hit_ids": [
+          90005
+        ],
+        "diagnostic_overlap_ids": [
+          90005,
+          90006,
+          90001,
+          90027,
+          90009
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R09",
+      "type": "retrieval",
+      "question": "高值耗材使用后多长时间内完成扫码计费？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 31.5,
+      "detail": {
+        "retrieved_ids": [
+          90005,
+          90006,
+          90007,
+          90018,
+          90010
+        ],
+        "gold_ids": [
+          90005
+        ],
+        "hit_ids": [
+          90005
+        ],
+        "diagnostic_overlap_ids": [
+          90005,
+          90006,
+          90007,
+          90018,
+          90010
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R10",
+      "type": "retrieval",
+      "question": "高值耗材是否实行零库存管理？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 30.4,
+      "detail": {
+        "retrieved_ids": [
+          90006,
+          90005,
+          90030,
+          90027,
+          90036
+        ],
+        "gold_ids": [
+          90006
+        ],
+        "hit_ids": [
+          90006
+        ],
+        "diagnostic_overlap_ids": [
+          90006,
+          90005,
+          90030,
+          90027,
+          90036
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R11",
+      "type": "retrieval",
+      "question": "跟台耗材术后多长时间内完成退库？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 20.9,
+      "detail": {
+        "retrieved_ids": [
+          90007,
+          90005,
+          90010,
+          90004,
+          90027
+        ],
+        "gold_ids": [
+          90007
+        ],
+        "hit_ids": [
+          90007
+        ],
+        "diagnostic_overlap_ids": [
+          90007,
+          90005,
+          90010,
+          90004,
+          90027
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R12",
+      "type": "retrieval",
+      "question": "耗材验收需要哪三方到场？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 31.1,
+      "detail": {
+        "retrieved_ids": [
+          90008,
+          90027,
+          90010,
+          90009,
+          90007
+        ],
+        "gold_ids": [
+          90008
+        ],
+        "hit_ids": [
+          90008
+        ],
+        "diagnostic_overlap_ids": [
+          90008,
+          90027,
+          90010,
+          90009,
+          90007
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R13",
+      "type": "retrieval",
+      "question": "有效期不足几个月的耗材不得入库？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 31.1,
+      "detail": {
+        "retrieved_ids": [
+          90009,
+          90021,
+          90016,
+          90008,
+          90034
+        ],
+        "gold_ids": [
+          90009
+        ],
+        "hit_ids": [
+          90009
+        ],
+        "diagnostic_overlap_ids": [
+          90009,
+          90021,
+          90016,
+          90008,
+          90034
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R14",
+      "type": "retrieval",
+      "question": "验收合格后多长时间内完成上架？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 31.9,
+      "detail": {
+        "retrieved_ids": [
+          90010,
+          90004,
+          90007,
+          90005,
+          90022
+        ],
+        "gold_ids": [
+          90010
+        ],
+        "hit_ids": [
+          90010
+        ],
+        "diagnostic_overlap_ids": [
+          90010,
+          90004,
+          90007,
+          90005,
+          90022
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R15",
+      "type": "retrieval",
+      "question": "冷链试剂的储运温度要求是多少？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 31.9,
+      "detail": {
+        "retrieved_ids": [
+          90011,
+          90013,
+          90035,
+          90034,
+          90033
+        ],
+        "gold_ids": [
+          90011
+        ],
+        "hit_ids": [
+          90011
+        ],
+        "diagnostic_overlap_ids": [
+          90011,
+          90013,
+          90035,
+          90034,
+          90033
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R16",
+      "type": "retrieval",
+      "question": "冷冻品种的储运温度需要在多少度以下？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 31.2,
+      "detail": {
+        "retrieved_ids": [
+          90011,
+          90015,
+          90013,
+          90012,
+          90010
+        ],
+        "gold_ids": [
+          90011
+        ],
+        "hit_ids": [
+          90011
+        ],
+        "diagnostic_overlap_ids": [
+          90011,
+          90015,
+          90013,
+          90012,
+          90010
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R17",
+      "type": "retrieval",
+      "question": "冷链运输的温度记录仪多久记录一次温度？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 31.4,
+      "detail": {
+        "retrieved_ids": [
+          90012,
+          90013,
+          90040,
+          90036,
+          90011
+        ],
+        "gold_ids": [
+          90012
+        ],
+        "hit_ids": [
+          90012
+        ],
+        "diagnostic_overlap_ids": [
+          90012,
+          90013,
+          90040,
+          90036,
+          90011
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R18",
+      "type": "retrieval",
+      "question": "运输途中温度超标累计多久需要隔离待检？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 31.0,
+      "detail": {
+        "retrieved_ids": [
+          90013,
+          90012,
+          90015,
+          90011
+        ],
+        "gold_ids": [
+          90013
+        ],
+        "hit_ids": [
+          90013
+        ],
+        "diagnostic_overlap_ids": [
+          90013,
+          90012,
+          90015,
+          90011
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R19",
+      "type": "retrieval",
+      "question": "消毒供应中心包含哪几个区域？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 30.8,
+      "detail": {
+        "retrieved_ids": [
+          90014,
+          90026,
+          90025,
+          90024,
+          90023
+        ],
+        "gold_ids": [
+          90014
+        ],
+        "hit_ids": [
+          90014
+        ],
+        "diagnostic_overlap_ids": [
+          90014,
+          90026,
+          90025,
+          90024,
+          90023
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R20",
+      "type": "retrieval",
+      "question": "压力蒸汽灭菌的温度和时间参数是多少？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 31.1,
+      "detail": {
+        "retrieved_ids": [
+          90015,
+          90038,
+          90036,
+          90018,
+          90014
+        ],
+        "gold_ids": [
+          90015
+        ],
+        "hit_ids": [
+          90015
+        ],
+        "diagnostic_overlap_ids": [
+          90015,
+          90038,
+          90036,
+          90018,
+          90014
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R21",
+      "type": "retrieval",
+      "question": "棉布包装的无菌物品有效期是多久？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 31.3,
+      "detail": {
+        "retrieved_ids": [
+          90016,
+          90014,
+          90021,
+          90009,
+          90008
+        ],
+        "gold_ids": [
+          90016
+        ],
+        "hit_ids": [
+          90016
+        ],
+        "diagnostic_overlap_ids": [
+          90016,
+          90014,
+          90021,
+          90009,
+          90008
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R22",
+      "type": "retrieval",
+      "question": "无纺布包装的无菌物品存放有效期是多少天？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 30.9,
+      "detail": {
+        "retrieved_ids": [
+          90016,
+          90014,
+          90021,
+          90009,
+          90008
+        ],
+        "gold_ids": [
+          90016
+        ],
+        "hit_ids": [
+          90016
+        ],
+        "diagnostic_overlap_ids": [
+          90016,
+          90014,
+          90021,
+          90009,
+          90008
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R23",
+      "type": "retrieval",
+      "question": "SPD 供应链一体化采用什么结算模式？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 31.5,
+      "detail": {
+        "retrieved_ids": [
+          90017,
+          90006,
+          90026,
+          90025,
+          90024
+        ],
+        "gold_ids": [
+          90017
+        ],
+        "hit_ids": [
+          90017
+        ],
+        "diagnostic_overlap_ids": [
+          90017,
+          90006,
+          90026,
+          90025,
+          90024
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R24",
+      "type": "retrieval",
+      "question": "SPD 补货响应时间不超过多久？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 9.8,
+      "detail": {
+        "retrieved_ids": [
+          90018,
+          90035,
+          90034,
+          90019,
+          90017
+        ],
+        "gold_ids": [
+          90018
+        ],
+        "hit_ids": [
+          90018
+        ],
+        "diagnostic_overlap_ids": [
+          90018,
+          90035,
+          90034,
+          90019,
+          90017
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R25",
+      "type": "retrieval",
+      "question": "月度对账应该在什么时候完成？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 27.0,
+      "detail": {
+        "retrieved_ids": [
+          90019,
+          90022,
+          90010,
+          90007,
+          90005
+        ],
+        "gold_ids": [
+          90019
+        ],
+        "hit_ids": [
+          90019
+        ],
+        "diagnostic_overlap_ids": [
+          90019,
+          90022,
+          90010,
+          90007,
+          90005
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R26",
+      "type": "retrieval",
+      "question": "哪些医疗器械需要实施 UDI 唯一标识管理？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 30.4,
+      "detail": {
+        "retrieved_ids": [
+          90020,
+          90022,
+          90008,
+          90023,
+          90021
+        ],
+        "gold_ids": [
+          90020
+        ],
+        "hit_ids": [
+          90020
+        ],
+        "diagnostic_overlap_ids": [
+          90020,
+          90022,
+          90008,
+          90023,
+          90021
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R27",
+      "type": "retrieval",
+      "question": "UDI 数据保存期限为产品有效期后几年？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 31.8,
+      "detail": {
+        "retrieved_ids": [
+          90021,
+          90008,
+          90016,
+          90009,
+          90040
+        ],
+        "gold_ids": [
+          90021
+        ],
+        "hit_ids": [
+          90021
+        ],
+        "diagnostic_overlap_ids": [
+          90021,
+          90008,
+          90016,
+          90009,
+          90040
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R28",
+      "type": "retrieval",
+      "question": "植入类器械的 UDI 数据保存不少于多少年？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 31.7,
+      "detail": {
+        "retrieved_ids": [
+          90021,
+          90013,
+          90037,
+          90028,
+          90022
+        ],
+        "gold_ids": [
+          90021
+        ],
+        "hit_ids": [
+          90021
+        ],
+        "diagnostic_overlap_ids": [
+          90021,
+          90013,
+          90037,
+          90028,
+          90022
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R29",
+      "type": "retrieval",
+      "question": "发生不良事件后多长时间内完成批次追溯？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 30.8,
+      "detail": {
+        "retrieved_ids": [
+          90022,
+          90010,
+          90007,
+          90005,
+          90004
+        ],
+        "gold_ids": [
+          90022
+        ],
+        "hit_ids": [
+          90022
+        ],
+        "diagnostic_overlap_ids": [
+          90022,
+          90010,
+          90007,
+          90005,
+          90004
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R30",
+      "type": "retrieval",
+      "question": "供应商准入需要提供哪些证照？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 30.6,
+      "detail": {
+        "retrieved_ids": [
+          90023,
+          90026,
+          90025,
+          90024,
+          90008
+        ],
+        "gold_ids": [
+          90023
+        ],
+        "hit_ids": [
+          90023
+        ],
+        "diagnostic_overlap_ids": [
+          90023,
+          90026,
+          90025,
+          90024,
+          90008
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R31",
+      "type": "retrieval",
+      "question": "供应商绩效评价包含哪些维度和分值？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 31.7,
+      "detail": {
+        "retrieved_ids": [
+          90025,
+          90024,
+          90026,
+          90023,
+          90008
+        ],
+        "gold_ids": [
+          90025
+        ],
+        "hit_ids": [
+          90025
+        ],
+        "diagnostic_overlap_ids": [
+          90025,
+          90024,
+          90026,
+          90023,
+          90008
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R32",
+      "type": "retrieval",
+      "question": "到货及时率低于多少会暂停新订单？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 31.2,
+      "detail": {
+        "retrieved_ids": [
+          90026,
+          90039,
+          90024
+        ],
+        "gold_ids": [
+          90026
+        ],
+        "hit_ids": [
+          90026
+        ],
+        "diagnostic_overlap_ids": [
+          90026,
+          90039,
+          90024
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R33",
+      "type": "retrieval",
+      "question": "应急储备物资分为哪几类？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 31.0,
+      "detail": {
+        "retrieved_ids": [
+          90027,
+          90028,
+          90029,
+          90040,
+          90004
+        ],
+        "gold_ids": [
+          90027
+        ],
+        "hit_ids": [
+          90027
+        ],
+        "diagnostic_overlap_ids": [
+          90027,
+          90028,
+          90029,
+          90040,
+          90004
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R34",
+      "type": "retrieval",
+      "question": "应急储备量按多少天日常消耗量确定？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 30.3,
+      "detail": {
+        "retrieved_ids": [
+          90028,
+          90027,
+          90040,
+          90029,
+          90017
+        ],
+        "gold_ids": [
+          90028
+        ],
+        "hit_ids": [
+          90028
+        ],
+        "diagnostic_overlap_ids": [
+          90028,
+          90027,
+          90040,
+          90029,
+          90017
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R35",
+      "type": "retrieval",
+      "question": "危险化学品如何存放和管理？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 30.9,
+      "detail": {
+        "retrieved_ids": [
+          90030,
+          90037,
+          90036,
+          90033,
+          90032
+        ],
+        "gold_ids": [
+          90030
+        ],
+        "hit_ids": [
+          90030
+        ],
+        "diagnostic_overlap_ids": [
+          90030,
+          90037,
+          90036,
+          90033,
+          90032
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R36",
+      "type": "retrieval",
+      "question": "危险废物转移联单需要保存几年？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 30.6,
+      "detail": {
+        "retrieved_ids": [
+          90032,
+          90040,
+          90030,
+          90021,
+          90013
+        ],
+        "gold_ids": [
+          90032
+        ],
+        "hit_ids": [
+          90032
+        ],
+        "diagnostic_overlap_ids": [
+          90032,
+          90040,
+          90030,
+          90021,
+          90013
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R37",
+      "type": "retrieval",
+      "question": "检验试剂损耗率超过多少需要分析原因？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 30.9,
+      "detail": {
+        "retrieved_ids": [
+          90035,
+          90033,
+          90034,
+          90013,
+          90019
+        ],
+        "gold_ids": [
+          90035
+        ],
+        "hit_ids": [
+          90035
+        ],
+        "diagnostic_overlap_ids": [
+          90035,
+          90033,
+          90034,
+          90013,
+          90019
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R38",
+      "type": "retrieval",
+      "question": "氧气瓶存放距离明火不少于多少米？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 31.1,
+      "detail": {
+        "retrieved_ids": [
+          90037,
+          90028,
+          90021,
+          90013,
+          90003
+        ],
+        "gold_ids": [
+          90037
+        ],
+        "hit_ids": [
+          90037
+        ],
+        "diagnostic_overlap_ids": [
+          90037,
+          90028,
+          90021,
+          90013,
+          90003
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R39",
+      "type": "retrieval",
+      "question": "医用气体管道系统多久检测一次？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 32.1,
+      "detail": {
+        "retrieved_ids": [
+          90038,
+          90040,
+          90036,
+          90029,
+          90028
+        ],
+        "gold_ids": [
+          90038
+        ],
+        "hit_ids": [
+          90038
+        ],
+        "diagnostic_overlap_ids": [
+          90038,
+          90040,
+          90036,
+          90029,
+          90028
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "R40",
+      "type": "retrieval",
+      "question": "液氧储罐液位低于多少会触发补液申请？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 30.3,
+      "detail": {
+        "retrieved_ids": [
+          90039,
+          90026,
+          90024,
+          90007,
+          90002
+        ],
+        "gold_ids": [
+          90039
+        ],
+        "hit_ids": [
+          90039
+        ],
+        "diagnostic_overlap_ids": [
+          90039,
+          90026,
+          90024,
+          90007,
+          90002
+        ],
+        "diagnostic_overlap_recall": 1.0
+      }
+    },
+    {
+      "id": "S01",
+      "type": "sql",
+      "question": "查询医院的名称、等级和所在地区",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 2154.0,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT name AS \"医院名称\", level AS \"等级\", region AS \"所在地区\" FROM (SELECT * FROM hospital WHERE tenant_id = 'hospital-demo') AS hospital LIMIT 100",
+        "gold_sql": "SELECT name, level, region FROM hospital",
+        "generated_rows": [
+          {
+            "医院名称": "仁和医院",
+            "等级": "三级甲等",
+            "所在地区": "上海"
+          }
+        ],
+        "gold_rows": [
+          {
+            "name": "仁和医院",
+            "level": "三级甲等",
+            "region": "上海"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S02",
+      "type": "sql",
+      "question": "列出全部科室名称",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 986.3,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT name AS \"科室名称\" FROM (SELECT * FROM department WHERE tenant_id = 'hospital-demo') AS department LIMIT 100",
+        "gold_sql": "SELECT name FROM department ORDER BY id",
+        "generated_rows": [
+          {
+            "科室名称": "内科"
+          },
+          {
+            "科室名称": "外科"
+          },
+          {
+            "科室名称": "药剂科"
+          }
+        ],
+        "gold_rows": [
+          {
+            "name": "内科"
+          },
+          {
+            "name": "外科"
+          },
+          {
+            "name": "药剂科"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S03",
+      "type": "sql",
+      "question": "查询物资名称和单价，按单价从高到低排序",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 996.5,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT name AS \"物资名称\", unit_price AS \"单价\" FROM (SELECT * FROM item WHERE tenant_id = 'hospital-demo') AS item ORDER BY unit_price DESC LIMIT 100",
+        "gold_sql": "SELECT name, unit_price FROM item ORDER BY unit_price DESC",
+        "generated_rows": [
+          {
+            "物资名称": "血常规试剂",
+            "单价": 12.0
+          },
+          {
+            "物资名称": "静脉输液器",
+            "单价": 6.5
+          },
+          {
+            "物资名称": "生理盐水",
+            "单价": 4.8
+          }
+        ],
+        "gold_rows": [
+          {
+            "name": "血常规试剂",
+            "unit_price": 12.0
+          },
+          {
+            "name": "静脉输液器",
+            "unit_price": 6.5
+          },
+          {
+            "name": "生理盐水",
+            "unit_price": 4.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "S04",
+      "type": "sql",
+      "question": "统计各物资的库存总量，返回物资名称和库存量",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 1148.3,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT i.name AS \"物资名称\", COALESCE(SUM(inv.qty), 0) AS \"库存量\"\nFROM (SELECT * FROM item WHERE tenant_id = 'hospital-demo') AS i\nLEFT JOIN (SELECT * FROM inventory WHERE tenant_id = 'hospital-demo') AS inv ON inv.item_id = i.id\nGROUP BY i.id, i.name\nORDER BY \"库存量\" DESC\nLIMIT 100",
+        "gold_sql": "SELECT i.name, SUM(inv.qty) AS qty FROM inventory inv JOIN item i ON inv.item_id = i.id GROUP BY i.name",
+        "generated_rows": [
+          {
+            "物资名称": "N95口罩",
+            "库存量": 17000.0
+          },
+          {
+            "物资名称": "一次性注射器",
+            "库存量": 8500.0
+          },
+          {
+            "物资名称": "生理盐水",
+            "库存量": 3200.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "name": "N95口罩",
+            "qty": 17000.0
+          },
+          {
+            "name": "一次性注射器",
+            "qty": 8500.0
+          },
+          {
+            "name": "医用纱布",
+            "qty": 1500.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S05",
+      "type": "sql",
+      "question": "统计各物资的库存金额（库存量乘以单价），返回物资名称和金额",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 1714.3,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT i.name AS \"物资名称\", SUM(inv.qty * i.unit_price) AS \"库存金额\"\nFROM (SELECT * FROM inventory WHERE tenant_id = 'hospital-demo') AS inv\nJOIN (SELECT * FROM item WHERE tenant_id = 'hospital-demo') AS i ON inv.item_id = i.id\nGROUP BY i.name\nORDER BY \"库存金额\" DESC\nLIMIT 100",
+        "gold_sql": "SELECT i.name, SUM(inv.qty * i.unit_price) AS amount FROM inventory inv JOIN item i ON inv.item_id = i.id GROUP BY i.name",
+        "generated_rows": [
+          {
+            "物资名称": "N95口罩",
+            "库存金额": 42500.0
+          },
+          {
+            "物资名称": "静脉输液器",
+            "库存金额": 15600.0
+          },
+          {
+            "物资名称": "生理盐水",
+            "库存金额": 15360.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "name": "N95口罩",
+            "amount": 42500.0
+          },
+          {
+            "name": "一次性注射器",
+            "amount": 10200.0
+          },
+          {
+            "name": "医用纱布",
+            "amount": 5400.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S06",
+      "type": "sql",
+      "question": "统计各科室的消耗总金额，返回科室名称和金额",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 916.8,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT d.name AS \"科室\", SUM(c.amount) AS \"消耗总金额\"\nFROM (SELECT * FROM consumption WHERE tenant_id = 'hospital-demo') AS c\nJOIN (SELECT * FROM department WHERE tenant_id = 'hospital-demo') AS d ON c.dept_id = d.id\nGROUP BY d.name\nORDER BY SUM(c.amount) DESC\nLIMIT 100",
+        "gold_sql": "SELECT d.name, SUM(c.amount) AS amount FROM consumption c JOIN department d ON c.dept_id = d.id GROUP BY d.name",
+        "generated_rows": [
+          {
+            "科室": "外科",
+            "消耗总金额": 5385.0
+          },
+          {
+            "科室": "药剂科",
+            "消耗总金额": 5310.0
+          },
+          {
+            "科室": "内科",
+            "消耗总金额": 4615.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "name": "内科",
+            "amount": 4615.0
+          },
+          {
+            "name": "外科",
+            "amount": 5385.0
+          },
+          {
+            "name": "检验科",
+            "amount": 4200.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S07",
+      "type": "sql",
+      "question": "统计各科室的消耗总数量，返回科室名称和数量",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 1317.1,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT d.name AS \"科室\", SUM(c.qty) AS \"消耗总数量\"\nFROM (SELECT * FROM consumption WHERE tenant_id = 'hospital-demo') AS c\nJOIN (SELECT * FROM department WHERE tenant_id = 'hospital-demo') AS d ON c.dept_id = d.id\nGROUP BY d.name\nORDER BY SUM(c.qty) DESC\nLIMIT 100",
+        "gold_sql": "SELECT d.name, SUM(c.qty) AS qty FROM consumption c JOIN department d ON c.dept_id = d.id GROUP BY d.name",
+        "generated_rows": [
+          {
+            "科室": "外科",
+            "消耗总数量": 2350.0
+          },
+          {
+            "科室": "内科",
+            "消耗总数量": 1250.0
+          },
+          {
+            "科室": "药剂科",
+            "消耗总数量": 1000.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "name": "内科",
+            "qty": 1250.0
+          },
+          {
+            "name": "外科",
+            "qty": 2350.0
+          },
+          {
+            "name": "检验科",
+            "qty": 350.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S08",
+      "type": "sql",
+      "question": "统计各物资的消耗总金额，返回物资名称和金额",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 991.5,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT i.name AS \"物资名称\", SUM(c.amount) AS \"消耗总金额\"\nFROM (SELECT * FROM consumption WHERE tenant_id = 'hospital-demo') AS c\nJOIN (SELECT * FROM item WHERE tenant_id = 'hospital-demo') AS i ON c.item_id = i.id\nGROUP BY i.name\nORDER BY SUM(c.amount) DESC\nLIMIT 100",
+        "gold_sql": "SELECT i.name, SUM(c.amount) AS amount FROM consumption c JOIN item i ON c.item_id = i.id GROUP BY i.name",
+        "generated_rows": [
+          {
+            "物资名称": "生理盐水",
+            "消耗总金额": 4800.0
+          },
+          {
+            "物资名称": "N95口罩",
+            "消耗总金额": 4500.0
+          },
+          {
+            "物资名称": "血常规试剂",
+            "消耗总金额": 4200.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "name": "N95口罩",
+            "amount": 4500.0
+          },
+          {
+            "name": "一次性注射器",
+            "amount": 960.0
+          },
+          {
+            "name": "医用纱布",
+            "amount": 1800.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S09",
+      "type": "sql",
+      "question": "统计各供应商的采购总额，返回供应商名称和金额",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 1166.2,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT s.name AS \"供应商名称\", SUM(po.amount) AS \"采购总额\"\nFROM (SELECT * FROM supplier WHERE tenant_id = 'hospital-demo') AS s\nJOIN (SELECT * FROM purchase_order WHERE tenant_id = 'hospital-demo') AS po ON po.supplier_id = s.id\nGROUP BY s.name\nORDER BY SUM(po.amount) DESC\nLIMIT 100",
+        "gold_sql": "SELECT s.name, SUM(po.amount) AS amount FROM purchase_order po JOIN supplier s ON po.supplier_id = s.id GROUP BY s.name",
+        "generated_rows": [
+          {
+            "供应商名称": "华康医疗",
+            "采购总额": 603000.0
+          },
+          {
+            "供应商名称": "瑞达生物",
+            "采购总额": 491500.0
+          },
+          {
+            "供应商名称": "康泰器械",
+            "采购总额": 299500.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "name": "华康医疗",
+            "amount": 603000.0
+          },
+          {
+            "name": "康泰器械",
+            "amount": 299500.0
+          },
+          {
+            "name": "瑞达生物",
+            "amount": 491500.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S10",
+      "type": "sql",
+      "question": "统计各供应商的采购订单数量，返回供应商名称和订单数",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 1071.6,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT s.name AS \"供应商名称\", COUNT(po.id) AS \"订单数\"\nFROM (SELECT * FROM supplier WHERE tenant_id = 'hospital-demo') AS s\nLEFT JOIN (SELECT * FROM purchase_order WHERE tenant_id = 'hospital-demo') AS po ON po.supplier_id = s.id\nGROUP BY s.id, s.name\nORDER BY \"订单数\" DESC\nLIMIT 100",
+        "gold_sql": "SELECT s.name, COUNT(*) AS cnt FROM purchase_order po JOIN supplier s ON po.supplier_id = s.id GROUP BY s.name",
+        "generated_rows": [
+          {
+            "供应商名称": "华康医疗",
+            "订单数": 5
+          },
+          {
+            "供应商名称": "瑞达生物",
+            "订单数": 4
+          },
+          {
+            "供应商名称": "康泰器械",
+            "订单数": 3
+          }
+        ],
+        "gold_rows": [
+          {
+            "name": "华康医疗",
+            "cnt": 5
+          },
+          {
+            "name": "康泰器械",
+            "cnt": 3
+          },
+          {
+            "name": "瑞达生物",
+            "cnt": 4
+          }
+        ]
+      }
+    },
+    {
+      "id": "S11",
+      "type": "sql",
+      "question": "查询履约率高于90的供应商名称和履约率",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 1068.5,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT name AS \"供应商名称\", fulfillment_rate AS \"履约率\" FROM (SELECT * FROM supplier WHERE tenant_id = 'hospital-demo') AS supplier WHERE fulfillment_rate > 90 ORDER BY fulfillment_rate DESC LIMIT 100",
+        "gold_sql": "SELECT name, fulfillment_rate FROM supplier WHERE fulfillment_rate > 90",
+        "generated_rows": [
+          {
+            "供应商名称": "华康医疗",
+            "履约率": 98.5
+          },
+          {
+            "供应商名称": "瑞达生物",
+            "履约率": 92.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "name": "华康医疗",
+            "fulfillment_rate": 98.5
+          },
+          {
+            "name": "瑞达生物",
+            "fulfillment_rate": 92.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S12",
+      "type": "sql",
+      "question": "按月份统计采购金额，返回月份和金额",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 991.6,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT to_char(order_date, 'YYYY-MM') AS \"月份\", SUM(amount) AS \"金额\" FROM (SELECT * FROM purchase_order WHERE tenant_id = 'hospital-demo') AS purchase_order GROUP BY to_char(order_date, 'YYYY-MM') ORDER BY \"月份\" LIMIT 100",
+        "gold_sql": "SELECT to_char(order_date, 'YYYY-MM') AS month, SUM(amount) AS amount FROM purchase_order GROUP BY month ORDER BY month",
+        "generated_rows": [
+          {
+            "月份": "2026-06",
+            "金额": 224500.0
+          },
+          {
+            "月份": "2026-07",
+            "金额": 220000.0
+          },
+          {
+            "月份": "2026-08",
+            "金额": 266000.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "month": "2026-06",
+            "amount": 224500.0
+          },
+          {
+            "month": "2026-07",
+            "amount": 220000.0
+          },
+          {
+            "month": "2026-08",
+            "amount": 266000.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S13",
+      "type": "sql",
+      "question": "按月份统计采购订单数量，返回月份和订单数",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 1192.1,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT to_char(order_date, 'YYYY-MM') AS \"月份\", COUNT(*) AS \"订单数\"\nFROM (SELECT * FROM purchase_order WHERE tenant_id = 'hospital-demo') AS purchase_order\nGROUP BY to_char(order_date, 'YYYY-MM')\nORDER BY \"月份\"\nLIMIT 100",
+        "gold_sql": "SELECT to_char(order_date, 'YYYY-MM') AS month, COUNT(*) AS cnt FROM purchase_order GROUP BY month ORDER BY month",
+        "generated_rows": [
+          {
+            "月份": "2026-06",
+            "订单数": 2
+          },
+          {
+            "月份": "2026-07",
+            "订单数": 2
+          },
+          {
+            "月份": "2026-08",
+            "订单数": 2
+          }
+        ],
+        "gold_rows": [
+          {
+            "month": "2026-06",
+            "cnt": 2
+          },
+          {
+            "month": "2026-07",
+            "cnt": 2
+          },
+          {
+            "month": "2026-08",
+            "cnt": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "S14",
+      "type": "sql",
+      "question": "已完成状态的采购订单总金额是多少？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 1098.9,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT COALESCE(SUM(amount), 0) AS \"已完成采购订单总金额\" FROM (SELECT * FROM purchase_order WHERE tenant_id = 'hospital-demo') AS purchase_order WHERE status = '已完成' LIMIT 200",
+        "gold_sql": "SELECT SUM(amount) AS amount FROM purchase_order WHERE status = '已完成'",
+        "generated_rows": [
+          {
+            "已完成采购订单总金额": 1205000.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "amount": 1205000.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S15",
+      "type": "sql",
+      "question": "已下单状态的采购订单总金额是多少？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 986.1,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT COALESCE(SUM(amount), 0) AS \"已下单采购订单总金额\" FROM (SELECT * FROM purchase_order WHERE tenant_id = 'hospital-demo') AS purchase_order WHERE status = '已下单' LIMIT 200",
+        "gold_sql": "SELECT SUM(amount) AS amount FROM purchase_order WHERE status = '已下单'",
+        "generated_rows": [
+          {
+            "已下单采购订单总金额": 189000.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "amount": 189000.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S16",
+      "type": "sql",
+      "question": "统计各订单状态的采购订单数量，返回状态和订单数",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 903.9,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT status AS \"状态\", COUNT(*) AS \"订单数\" FROM (SELECT * FROM purchase_order WHERE tenant_id = 'hospital-demo') AS purchase_order GROUP BY status LIMIT 100",
+        "gold_sql": "SELECT status, COUNT(*) AS cnt FROM purchase_order GROUP BY status",
+        "generated_rows": [
+          {
+            "状态": "已下单",
+            "订单数": 2
+          },
+          {
+            "状态": "已完成",
+            "订单数": 10
+          }
+        ],
+        "gold_rows": [
+          {
+            "status": "已下单",
+            "cnt": 2
+          },
+          {
+            "status": "已完成",
+            "cnt": 10
+          }
+        ]
+      }
+    },
+    {
+      "id": "S17",
+      "type": "sql",
+      "question": "采购金额最高的订单来自哪个供应商，金额是多少？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 858.4,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT s.name AS \"供应商\", po.amount AS \"金额\" FROM (SELECT * FROM purchase_order WHERE tenant_id = 'hospital-demo') AS po JOIN (SELECT * FROM supplier WHERE tenant_id = 'hospital-demo') AS s ON po.supplier_id = s.id ORDER BY po.amount DESC LIMIT 1",
+        "gold_sql": "SELECT s.name, po.amount FROM purchase_order po JOIN supplier s ON po.supplier_id = s.id ORDER BY po.amount DESC LIMIT 1",
+        "generated_rows": [
+          {
+            "供应商": "瑞达生物",
+            "金额": 175000.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "name": "瑞达生物",
+            "amount": 175000.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S18",
+      "type": "sql",
+      "question": "发票的总金额是多少？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 1275.2,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT SUM(amount) AS \"发票总金额\" FROM (SELECT * FROM invoice WHERE tenant_id = 'hospital-demo') AS invoice LIMIT 200",
+        "gold_sql": "SELECT SUM(amount) AS amount FROM invoice",
+        "generated_rows": [
+          {
+            "发票总金额": 302500.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "amount": 302500.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S19",
+      "type": "sql",
+      "question": "已开票状态的发票金额合计是多少？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 928.7,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT COALESCE(SUM(amount), 0) AS \"已开票金额合计\" FROM (SELECT * FROM invoice WHERE tenant_id = 'hospital-demo') AS invoice WHERE status = '已开票' LIMIT 200",
+        "gold_sql": "SELECT SUM(amount) AS amount FROM invoice WHERE status = '已开票'",
+        "generated_rows": [
+          {
+            "已开票金额合计": 224500.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "amount": 224500.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S20",
+      "type": "sql",
+      "question": "统计各供应商的发票金额，返回供应商名称和金额",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 1042.3,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT s.name AS \"供应商名称\", SUM(i.amount) AS \"金额\"\nFROM (SELECT * FROM invoice WHERE tenant_id = 'hospital-demo') AS i\nJOIN (SELECT * FROM supplier WHERE tenant_id = 'hospital-demo') AS s ON i.supplier_id = s.id\nGROUP BY s.name\nORDER BY SUM(i.amount) DESC\nLIMIT 100",
+        "gold_sql": "SELECT s.name, SUM(i.amount) AS amount FROM invoice i JOIN supplier s ON i.supplier_id = s.id GROUP BY s.name",
+        "generated_rows": [
+          {
+            "供应商名称": "华康医疗",
+            "金额": 128000.0
+          },
+          {
+            "供应商名称": "瑞达生物",
+            "金额": 96500.0
+          },
+          {
+            "供应商名称": "康泰器械",
+            "金额": 78000.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "name": "华康医疗",
+            "amount": 128000.0
+          },
+          {
+            "name": "康泰器械",
+            "amount": 78000.0
+          },
+          {
+            "name": "瑞达生物",
+            "amount": 96500.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S21",
+      "type": "sql",
+      "question": "查询检验试剂类物资的名称和单价",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 1019.7,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT name AS \"物资名称\", unit_price AS \"单价\" FROM (SELECT * FROM item WHERE tenant_id = 'hospital-demo') AS item WHERE category = '检验试剂' LIMIT 100",
+        "gold_sql": "SELECT name, unit_price FROM item WHERE category = '检验试剂'",
+        "generated_rows": [
+          {
+            "物资名称": "血常规试剂",
+            "单价": 12.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "name": "血常规试剂",
+            "unit_price": 12.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S22",
+      "type": "sql",
+      "question": "防护耗材类物资的库存总量是多少？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 727.0,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT SUM(i.qty) AS \"库存总量\"\nFROM (SELECT * FROM inventory WHERE tenant_id = 'hospital-demo') AS i\nJOIN (SELECT * FROM item WHERE tenant_id = 'hospital-demo') AS it ON i.item_id = it.id\nWHERE it.category = '防护耗材' LIMIT 200",
+        "gold_sql": "SELECT SUM(inv.qty) AS qty FROM inventory inv JOIN item i ON inv.item_id = i.id WHERE i.category = '防护耗材'",
+        "generated_rows": [
+          {
+            "库存总量": 17000.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "qty": 17000.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S23",
+      "type": "sql",
+      "question": "单价最高的物资名称和单价是多少？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 930.5,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT name AS \"物资名称\", unit_price AS \"单价\" FROM (SELECT * FROM item WHERE tenant_id = 'hospital-demo') AS item ORDER BY unit_price DESC NULLS LAST LIMIT 1",
+        "gold_sql": "SELECT name, unit_price FROM item ORDER BY unit_price DESC LIMIT 1",
+        "generated_rows": [
+          {
+            "物资名称": "血常规试剂",
+            "单价": 12.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "name": "血常规试剂",
+            "unit_price": 12.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S24",
+      "type": "sql",
+      "question": "所有物资的平均单价是多少？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 759.3,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT AVG(unit_price) AS \"平均单价\" FROM (SELECT * FROM item WHERE tenant_id = 'hospital-demo') AS item LIMIT 200",
+        "gold_sql": "SELECT AVG(unit_price) AS avg_price FROM item",
+        "generated_rows": [
+          {
+            "平均单价": 5.1
+          }
+        ],
+        "gold_rows": [
+          {
+            "avg_price": 5.1
+          }
+        ]
+      }
+    },
+    {
+      "id": "S25",
+      "type": "sql",
+      "question": "物资一共有多少种？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 804.3,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT COUNT(*) AS \"物资种类数\" FROM (SELECT * FROM item WHERE tenant_id = 'hospital-demo') AS item LIMIT 200",
+        "gold_sql": "SELECT COUNT(*) AS cnt FROM item",
+        "generated_rows": [
+          {
+            "物资种类数": 6
+          }
+        ],
+        "gold_rows": [
+          {
+            "cnt": 6
+          }
+        ]
+      }
+    },
+    {
+      "id": "S26",
+      "type": "sql",
+      "question": "外科的消耗总金额是多少？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 989.5,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT SUM(c.amount) AS \"消耗总金额\"\nFROM (SELECT * FROM consumption WHERE tenant_id = 'hospital-demo') AS c\nJOIN (SELECT * FROM department WHERE tenant_id = 'hospital-demo') AS d ON c.dept_id = d.id\nWHERE d.name = '外科' LIMIT 200",
+        "gold_sql": "SELECT SUM(c.amount) AS amount FROM consumption c JOIN department d ON c.dept_id = d.id WHERE d.name = '外科'",
+        "generated_rows": [
+          {
+            "消耗总金额": 5385.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "amount": 5385.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S27",
+      "type": "sql",
+      "question": "内科的消耗总金额是多少？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 1020.8,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT SUM(c.amount) AS \"消耗总金额\"\nFROM (SELECT * FROM consumption WHERE tenant_id = 'hospital-demo') AS c\nJOIN (SELECT * FROM department WHERE tenant_id = 'hospital-demo') AS d ON c.dept_id = d.id\nWHERE d.name = '内科' LIMIT 200",
+        "gold_sql": "SELECT SUM(c.amount) AS amount FROM consumption c JOIN department d ON c.dept_id = d.id WHERE d.name = '内科'",
+        "generated_rows": [
+          {
+            "消耗总金额": 4615.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "amount": 4615.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S28",
+      "type": "sql",
+      "question": "2026年10月的采购总额是多少？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 1195.7,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT COALESCE(SUM(amount), 0) AS \"采购总额\" FROM (SELECT * FROM purchase_order WHERE tenant_id = 'hospital-demo') AS purchase_order WHERE to_char(order_date, 'YYYY-MM') = '2026-10' LIMIT 200",
+        "gold_sql": "SELECT SUM(amount) AS amount FROM purchase_order WHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-11-01'",
+        "generated_rows": [
+          {
+            "采购总额": 264000.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "amount": 264000.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S29",
+      "type": "sql",
+      "question": "2026年11月的采购金额是多少？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 804.9,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT COALESCE(SUM(amount), 0) AS \"采购金额\" FROM (SELECT * FROM purchase_order WHERE tenant_id = 'hospital-demo') AS purchase_order WHERE order_date >= DATE '2026-11-01' AND order_date < DATE '2026-12-01' LIMIT 200",
+        "gold_sql": "SELECT SUM(amount) AS amount FROM purchase_order WHERE order_date >= DATE '2026-11-01' AND order_date < DATE '2026-12-01'",
+        "generated_rows": [
+          {
+            "采购金额": 189000.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "amount": 189000.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S30",
+      "type": "sql",
+      "question": "2026年10月的消耗总额是多少？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 962.5,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT COALESCE(SUM(amount), 0) AS \"消耗总额\" FROM (SELECT * FROM consumption WHERE tenant_id = 'hospital-demo') AS consumption WHERE consume_date >= DATE '2026-10-01' AND consume_date < DATE '2026-11-01' LIMIT 200",
+        "gold_sql": "SELECT SUM(amount) AS amount FROM consumption WHERE consume_date >= DATE '2026-10-01' AND consume_date < DATE '2026-11-01'",
+        "generated_rows": [
+          {
+            "消耗总额": 7595.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "amount": 7595.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S31",
+      "type": "sql",
+      "question": "N95口罩的库存总量是多少？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 1054.7,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT COALESCE(SUM(i.qty), 0) AS \"库存总量\" FROM (SELECT * FROM inventory WHERE tenant_id = 'hospital-demo') AS i JOIN (SELECT * FROM item WHERE tenant_id = 'hospital-demo') AS it ON i.item_id = it.id WHERE it.name = 'N95口罩' LIMIT 200",
+        "gold_sql": "SELECT SUM(inv.qty) AS qty FROM inventory inv JOIN item i ON inv.item_id = i.id WHERE i.name = 'N95口罩'",
+        "generated_rows": [
+          {
+            "库存总量": 17000.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "qty": 17000.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S32",
+      "type": "sql",
+      "question": "库存量低于1000的物资有哪些，返回物资名称和库存量",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 1112.4,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT i.name AS \"物资名称\", SUM(inv.qty) AS \"库存量\"\nFROM (SELECT * FROM inventory WHERE tenant_id = 'hospital-demo') AS inv\nJOIN (SELECT * FROM item WHERE tenant_id = 'hospital-demo') AS i ON inv.item_id = i.id\nGROUP BY i.id, i.name\nHAVING SUM(inv.qty) < 1000\nORDER BY SUM(inv.qty) ASC\nLIMIT 100",
+        "gold_sql": "SELECT i.name, SUM(inv.qty) AS qty FROM inventory inv JOIN item i ON inv.item_id = i.id GROUP BY i.name HAVING SUM(inv.qty) < 1000",
+        "generated_rows": [
+          {
+            "物资名称": "血常规试剂",
+            "库存量": 800.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "name": "血常规试剂",
+            "qty": 800.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S33",
+      "type": "sql",
+      "question": "统计各科室的N95口罩消耗数量，返回科室名称和数量",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 1086.6,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT d.name AS \"科室\", SUM(c.qty) AS \"消耗数量\"\nFROM (SELECT * FROM consumption WHERE tenant_id = 'hospital-demo') AS c\nJOIN (SELECT * FROM department WHERE tenant_id = 'hospital-demo') AS d ON c.dept_id = d.id\nJOIN (SELECT * FROM item WHERE tenant_id = 'hospital-demo') AS i ON c.item_id = i.id\nWHERE i.name = 'N95口罩'\nGROUP BY d.name\nORDER BY SUM(c.qty) DESC\nLIMIT 100",
+        "gold_sql": "SELECT d.name, SUM(c.qty) AS qty FROM consumption c JOIN department d ON c.dept_id = d.id JOIN item i ON c.item_id = i.id WHERE i.name = 'N95口罩' GROUP BY d.name",
+        "generated_rows": [
+          {
+            "科室": "外科",
+            "消耗数量": 1050.0
+          },
+          {
+            "科室": "内科",
+            "消耗数量": 750.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "name": "内科",
+            "qty": 750.0
+          },
+          {
+            "name": "外科",
+            "qty": 1050.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S34",
+      "type": "sql",
+      "question": "供应商一共有多少家？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 958.7,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT COUNT(*) AS \"供应商数量\" FROM (SELECT * FROM supplier WHERE tenant_id = 'hospital-demo') AS supplier LIMIT 200",
+        "gold_sql": "SELECT COUNT(*) AS cnt FROM supplier",
+        "generated_rows": [
+          {
+            "供应商数量": 3
+          }
+        ],
+        "gold_rows": [
+          {
+            "cnt": 3
+          }
+        ]
+      }
+    },
+    {
+      "id": "S35",
+      "type": "sql",
+      "question": "全部采购订单的总金额是多少？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 663.2,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT COALESCE(SUM(amount), 0) AS \"总金额\" FROM (SELECT * FROM purchase_order WHERE tenant_id = 'hospital-demo') AS purchase_order LIMIT 200",
+        "gold_sql": "SELECT SUM(amount) AS amount FROM purchase_order",
+        "generated_rows": [
+          {
+            "总金额": 1394000.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "amount": 1394000.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S36",
+      "type": "sql",
+      "question": "全部消耗记录的总金额是多少？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 958.9,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT COALESCE(SUM(amount), 0) AS \"总金额\" FROM (SELECT * FROM consumption WHERE tenant_id = 'hospital-demo') AS consumption LIMIT 200",
+        "gold_sql": "SELECT SUM(amount) AS amount FROM consumption",
+        "generated_rows": [
+          {
+            "总金额": 19510.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "amount": 19510.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S37",
+      "type": "sql",
+      "question": "消耗金额最高的科室是哪个，金额是多少？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 1008.1,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT d.name AS \"科室\", SUM(c.amount) AS \"消耗金额\"\nFROM (SELECT * FROM consumption WHERE tenant_id = 'hospital-demo') AS c\nJOIN (SELECT * FROM department WHERE tenant_id = 'hospital-demo') AS d ON c.dept_id = d.id\nGROUP BY d.name\nORDER BY SUM(c.amount) DESC\nLIMIT 1",
+        "gold_sql": "SELECT d.name, SUM(c.amount) AS amount FROM consumption c JOIN department d ON c.dept_id = d.id GROUP BY d.name ORDER BY SUM(c.amount) DESC LIMIT 1",
+        "generated_rows": [
+          {
+            "科室": "外科",
+            "消耗金额": 5385.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "name": "外科",
+            "amount": 5385.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S38",
+      "type": "sql",
+      "question": "统计各发票状态的发票数量，返回状态和数量",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 1174.2,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT status AS \"状态\", COUNT(*) AS \"数量\" FROM (SELECT * FROM invoice WHERE tenant_id = 'hospital-demo') AS invoice GROUP BY status LIMIT 100",
+        "gold_sql": "SELECT status, COUNT(*) AS cnt FROM invoice GROUP BY status",
+        "generated_rows": [
+          {
+            "状态": "已开票",
+            "数量": 2
+          },
+          {
+            "状态": "待开票",
+            "数量": 1
+          }
+        ],
+        "gold_rows": [
+          {
+            "status": "已开票",
+            "cnt": 2
+          },
+          {
+            "status": "待开票",
+            "cnt": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "S39",
+      "type": "sql",
+      "question": "待开票状态的发票金额合计是多少？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 883.1,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT COALESCE(SUM(amount), 0) AS \"待开票金额合计\" FROM (SELECT * FROM invoice WHERE tenant_id = 'hospital-demo') AS invoice WHERE status = '待开票' LIMIT 200",
+        "gold_sql": "SELECT SUM(amount) AS amount FROM invoice WHERE status = '待开票'",
+        "generated_rows": [
+          {
+            "待开票金额合计": 78000.0
+          }
+        ],
+        "gold_rows": [
+          {
+            "amount": 78000.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "S40",
+      "type": "sql",
+      "question": "统计各物资的库存批次数量，返回物资名称和批次数",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 1590.7,
+      "model": "deepseek",
+      "error": "",
+      "detail": {
+        "generated_sql": "SELECT i.name AS \"物资名称\", COUNT(DISTINCT inv.batch_no) AS \"批次数\"\nFROM (SELECT * FROM inventory WHERE tenant_id = 'hospital-demo') AS inv\nJOIN (SELECT * FROM item WHERE tenant_id = 'hospital-demo') AS i ON inv.item_id = i.id\nGROUP BY i.name\nORDER BY \"批次数\" DESC\nLIMIT 100",
+        "gold_sql": "SELECT i.name, COUNT(inv.batch_no) AS batches FROM inventory inv JOIN item i ON inv.item_id = i.id GROUP BY i.name",
+        "generated_rows": [
+          {
+            "物资名称": "N95口罩",
+            "批次数": 2
+          },
+          {
+            "物资名称": "一次性注射器",
+            "批次数": 1
+          },
+          {
+            "物资名称": "医用纱布",
+            "批次数": 1
+          }
+        ],
+        "gold_rows": [
+          {
+            "name": "N95口罩",
+            "batches": 2
+          },
+          {
+            "name": "一次性注射器",
+            "batches": 1
+          },
+          {
+            "name": "医用纱布",
+            "batches": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "A01",
+      "type": "answer",
+      "question": "高值耗材使用后多长时间内需要完成扫码计费？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 815.5,
+      "model": "deepseek",
+      "detail": {
+        "intent": "retrieval",
+        "answer": "高值耗材使用后需在**24小时内**完成扫码计费。\n\n依据：文档ID=9002，页码=1，章节=第一章 定义与编码，第二条：“高值耗材实行一物一码管理，使用后24小时内完成扫码计费。”",
+        "missing_keywords": [],
+        "citation_ids": [
+          90005,
+          90006,
+          90018,
+          90007,
+          90034
+        ]
+      }
+    },
+    {
+      "id": "A02",
+      "type": "answer",
+      "question": "冷链试剂运输时温度记录仪多久记录一次温度？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 1006.5,
+      "model": "deepseek",
+      "detail": {
+        "intent": "retrieval",
+        "answer": "冷链试剂运输时，温度记录仪每5分钟自动记录一次温度。依据文档9004第二章第二条：运输须使用验证合格的冷藏箱，并配备温度记录仪，每5分钟自动记录一次温度。（来源：文档9004，页码1，第二章“运输监控”第二条）",
+        "missing_keywords": [],
+        "citation_ids": [
+          90012,
+          90013,
+          90011,
+          90040,
+          90036
+        ]
+      }
+    },
+    {
+      "id": "A03",
+      "type": "answer",
+      "question": "运输途中温度超标累计多长时间需要隔离待检？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 776.4,
+      "model": "deepseek",
+      "detail": {
+        "intent": "retrieval",
+        "answer": "运输途中温度超标累计超过30分钟的，整批试剂隔离待检，不得直接使用。（来源：文档9004 第三章 偏差处理 第三条）",
+        "missing_keywords": [],
+        "citation_ids": [
+          90013,
+          90015,
+          90012,
+          90018,
+          90011
+        ]
+      }
+    },
+    {
+      "id": "A04",
+      "type": "answer",
+      "question": "压力蒸汽灭菌的温度和时间分别是多少？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 1130.7,
+      "model": "deepseek",
+      "detail": {
+        "intent": "retrieval",
+        "answer": "依据文档9005（第二章 灭菌参数，第二条）：压力蒸汽灭菌参数为温度134℃、时间4分钟。",
+        "missing_keywords": [],
+        "citation_ids": [
+          90015,
+          90038,
+          90036,
+          90018,
+          90014
+        ]
+      }
+    },
+    {
+      "id": "A05",
+      "type": "answer",
+      "question": "棉布包装的无菌物品有效期是多久？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 851.8,
+      "model": "deepseek",
+      "detail": {
+        "intent": "retrieval",
+        "answer": "棉布包装的无菌物品存放有效期为 **7天**。\n\n依据：文档ID=9005，页码=1，章节=第三章 存放有效期，第四条：“无菌物品存放有效期：棉布包装7天，无纺布包装180天，纸塑包装180天。”",
+        "missing_keywords": [],
+        "citation_ids": [
+          90016,
+          90014,
+          90021,
+          90009,
+          90008
+        ]
+      }
+    },
+    {
+      "id": "A06",
+      "type": "answer",
+      "question": "无纺布包装的无菌物品存放有效期是多久？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 1134.2,
+      "model": "deepseek",
+      "detail": {
+        "intent": "retrieval",
+        "answer": "无纺布包装的无菌物品存放有效期为 **180天**。\n\n依据：文档ID=9005，页码=1，章节=第三章 存放有效期，第四条：“无菌物品存放有效期：棉布包装7天，无纺布包装180天，纸塑包装180天。”",
+        "missing_keywords": [],
+        "citation_ids": [
+          90016,
+          90014,
+          90021,
+          90009,
+          90008
+        ]
+      }
+    },
+    {
+      "id": "A07",
+      "type": "answer",
+      "question": "SPD 补货响应时间不超过多长时间？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 991.4,
+      "model": "deepseek",
+      "detail": {
+        "intent": "retrieval",
+        "answer": "依据参考资料，SPD 补货响应时间不超过 **4小时**。\n\n依据：科室扫码请领后系统自动生成补货计划，补货响应时间不超过4小时。（文档ID=9006，页码=1，章节=第二章 补货响应）",
+        "missing_keywords": [],
+        "citation_ids": [
+          90018,
+          90035,
+          90034,
+          90019,
+          90017
+        ]
+      }
+    },
+    {
+      "id": "A08",
+      "type": "answer",
+      "question": "SPD 月度对账账实差异超过多少需要专项核查？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 1321.1,
+      "model": "deepseek",
+      "detail": {
+        "intent": "retrieval",
+        "answer": "依据参考资料，SPD 月度对账账实差异超过 **0.5%** 的，需启动专项核查。\n\n该规定出自文档 ID=9006 的《第三章 对账管理》第三条：月度对账应于次月5日前完成，账实差异超过0.5%的启动专项核查。（来源：文档9006，页码1，第三章“对账管理”第三条）",
+        "missing_keywords": [],
+        "citation_ids": [
+          90019,
+          90035,
+          90034,
+          90018,
+          90017
+        ]
+      }
+    },
+    {
+      "id": "A09",
+      "type": "answer",
+      "question": "植入类器械的 UDI 数据需要保存多少年？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 1444.9,
+      "model": "deepseek",
+      "detail": {
+        "intent": "retrieval",
+        "answer": "植入类器械的 UDI 数据保存期限为**不少于30年**。\n\n依据：文档ID=9007，页码=1，章节=第二章 数据保存，第二条：“UDI 数据保存期限为产品有效期后2年，植入类器械不少于30年。”",
+        "missing_keywords": [],
+        "citation_ids": [
+          90021,
+          90022,
+          90020,
+          90040,
+          90032
+        ]
+      }
+    },
+    {
+      "id": "A10",
+      "type": "answer",
+      "question": "供应商绩效评价中质量维度的分值是多少？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 880.0,
+      "model": "deepseek",
+      "detail": {
+        "intent": "retrieval",
+        "answer": "供应商绩效评价中质量维度的分值是 **40分**。\n\n依据：文档ID=9008，页码=1，章节=第三章 绩效评价，第三条：供应商绩效评价维度及分值：质量40分、交付30分、价格20分、服务10分。",
+        "missing_keywords": [],
+        "citation_ids": [
+          90025,
+          90024,
+          90026,
+          90023,
+          90008
+        ]
+      }
+    },
+    {
+      "id": "A11",
+      "type": "answer",
+      "question": "供应商到货及时率低于多少会被暂停新订单？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 1067.9,
+      "model": "deepseek",
+      "detail": {
+        "intent": "retrieval",
+        "answer": "根据参考资料，供应商到货及时率低于 **90%** 会被暂停新订单 **1个月** 并限期整改。\n\n依据：文档ID=9008，第四章《交付约束》第四条：“到货及时率低于90%的供应商，暂停新订单1个月并限期整改。”",
+        "missing_keywords": [],
+        "citation_ids": [
+          90026,
+          90024,
+          90039,
+          90025,
+          90023
+        ]
+      }
+    },
+    {
+      "id": "A12",
+      "type": "answer",
+      "question": "应急储备量按照多少天的日常消耗量确定？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 804.3,
+      "model": "deepseek",
+      "detail": {
+        "intent": "retrieval",
+        "answer": "应急储备量按不少于30天日常消耗量确定，并且每季度动态调整一次。（来源：文档9009，第二章《储备定额》第二条）",
+        "missing_keywords": [],
+        "citation_ids": [
+          90028,
+          90027,
+          90040,
+          90029,
+          90017
+        ]
+      }
+    },
+    {
+      "id": "A13",
+      "type": "answer",
+      "question": "氧气瓶存放距离明火不少于多少米？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 1058.4,
+      "model": "deepseek",
+      "detail": {
+        "intent": "retrieval",
+        "answer": "依据文档 9012（第二章 气瓶存放，第二条），氧气瓶存放应距离明火**不少于10米**，并且空瓶与满瓶应分区存放。",
+        "missing_keywords": [],
+        "citation_ids": [
+          90037,
+          90028,
+          90021,
+          90013,
+          90003
+        ]
+      }
+    },
+    {
+      "id": "A14",
+      "type": "answer",
+      "question": "液氧储罐液位低于多少会触发补液申请？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 944.2,
+      "model": "deepseek",
+      "detail": {
+        "intent": "retrieval",
+        "answer": "液氧储罐液位低于 **30%** 时会自动触发补液申请，并确保 **48小时内到货**。  \n依据：文档ID=9012，页码=1，章节=第四章 液氧储罐，第四条。",
+        "missing_keywords": [],
+        "citation_ids": [
+          90039,
+          90026,
+          90024,
+          90007,
+          90002
+        ]
+      }
+    },
+    {
+      "id": "A15",
+      "type": "answer",
+      "question": "检验试剂损耗率超过多少需要分析原因？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 853.8,
+      "model": "deepseek",
+      "detail": {
+        "intent": "retrieval",
+        "answer": "根据文档 9011 第三章第三条，每月统计试剂损耗率，**损耗率超过3%**的须分析原因并提交改进报告。（来源：文档9011，页码1，第三章 损耗控制）",
+        "missing_keywords": [],
+        "citation_ids": [
+          90035,
+          90033,
+          90034,
+          90013,
+          90019
+        ]
+      }
+    },
+    {
+      "id": "A16",
+      "type": "answer",
+      "question": "危险化学品在存放管理上有什么要求？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 1068.6,
+      "model": "deepseek",
+      "detail": {
+        "intent": "retrieval",
+        "answer": "危险化学品在存放管理上的要求是：实行双人双锁管理，专柜专区存放，台账每日核对。依据文档9010《第一章 存放管理》第一条。",
+        "missing_keywords": [],
+        "citation_ids": [
+          90030,
+          90037,
+          90036,
+          90033,
+          90032
+        ]
+      }
+    },
+    {
+      "id": "A17",
+      "type": "answer",
+      "question": "供应商资质多久复审一次？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 712.0,
+      "model": "deepseek",
+      "detail": {
+        "intent": "retrieval",
+        "answer": "供应商资质每年复审一次。此外，连续两年绩效低于80分的供应商将被取消供货资格。（来源：文档9008，第二章《资质复审》第二条）",
+        "missing_keywords": [],
+        "citation_ids": [
+          90024,
+          90026,
+          90025,
+          90023,
+          90008
+        ]
+      }
+    },
+    {
+      "id": "A18",
+      "type": "answer",
+      "question": "单一来源采购需要在院内公示几个工作日？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 972.9,
+      "model": "deepseek",
+      "detail": {
+        "intent": "retrieval",
+        "answer": "单一来源采购需要在院内公示 **5个工作日**，公示无异议后方可执行。\n\n依据：文档ID=9001，页码=1，章节=第三章 供应商选择，第七条。",
+        "missing_keywords": [],
+        "citation_ids": [
+          90003,
+          90002,
+          90007,
+          90017,
+          90006
+        ]
+      }
+    },
+    {
+      "id": "A19",
+      "type": "answer",
+      "question": "质保金按照合同金额的多少比例预留？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 897.4,
+      "model": "deepseek",
+      "detail": {
+        "intent": "retrieval",
+        "answer": "质保金按合同金额的 **5%** 预留。依据文档9001（页码1，章节“第四章 验收入库与付款”第八条至第九条）：第九条明确“质保金按合同金额的5%预留，质保期满无质量问题后无息退还”。",
+        "missing_keywords": [],
+        "citation_ids": [
+          90004,
+          90001
+        ]
+      }
+    },
+    {
+      "id": "A20",
+      "type": "answer",
+      "question": "高值耗材是否实行零库存管理？",
+      "passed": true,
+      "score": 1.0,
+      "latency_ms": 1070.4,
+      "model": "deepseek",
+      "detail": {
+        "intent": "retrieval",
+        "answer": "是的。根据文档9002第二章第三条，高值耗材实行零库存管理，由供应商寄售于院内智能柜（片段1）。",
+        "missing_keywords": [],
+        "citation_ids": [
+          90006,
+          90005,
+          90030,
+          90027,
+          90036
+        ]
+      }
+    }
+  ]
+}
