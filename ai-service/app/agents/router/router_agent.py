@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+import re
 from enum import Enum
 
 logger = logging.getLogger(__name__)
@@ -11,7 +12,8 @@ class Intent(str, Enum):
     RETRIEVAL = "retrieval"      # 文件问答 / RAG
     NL2SQL = "nl2sql"            # 数据查询 / 统计
     REPORT = "report"            # 生成报表 / 图表
-    CLARIFY = "clarify"          # 意图不清，需追问
+    CHAT = "chat"                # 自由对话 / 闲聊 / 通用问题（默认分支）
+    CLARIFY = "clarify"          # 真歧义，需追问
 
 
 _RETRIEVAL_KEYWORDS = [
@@ -31,16 +33,37 @@ _REPORT_KEYWORDS = ["报表", "图", "图表", "可视化", "生成报表", "导
 
 
 def classify(question: str) -> Intent:
-    """按“报表 > 文档问答 > 数据查询”的优先级匹配，默认走文档问答。
+    """按“报表 > 文档问答 > 数据查询 > 自由对话”的优先级匹配。
 
-    文档类关键词优先于 SQL 关键词：含“多少”的制度类问题（如“灭菌时间是多少”）
-    应走 RAG，而不是被当成统计查询。
+    澄清（CLARIFY）只在两种真正无法判断的情况下触发：
+      1. 输入没有语义（空 / 纯符号数字 / 单字符）；
+      2. 同时命中文档类和数据类关键词（如“灭菌时间是多少”），
+         无法确定用户要查文档还是查统计。
+    其余未命中任何业务关键词的输入一律走 CHAT 自由对话，
+    避免闲聊、问候、通用问题被强制拖入意图确认流程。
     """
-    q = question.lower()
-    if any(kw in q for kw in _REPORT_KEYWORDS):
+    stripped = question.strip()
+    # 无语义检测：空 / 纯符号数字 / 长度过短
+    if not stripped:
+        return Intent.CLARIFY
+    if len(re.sub(r"\s+", "", stripped)) < 2:
+        return Intent.CLARIFY
+    if re.fullmatch(r"[\d\s\W_]+", stripped):
+        return Intent.CLARIFY
+
+    q = stripped.lower()
+    hit_retrieval = any(kw in q for kw in _RETRIEVAL_KEYWORDS)
+    hit_nl2sql = any(kw in q for kw in _NL2SQL_KEYWORDS)
+    hit_report = any(kw in q for kw in _REPORT_KEYWORDS)
+
+    if hit_report:
         return Intent.REPORT
-    if any(kw in q for kw in _RETRIEVAL_KEYWORDS):
+    # 同时命中文档 + 数据类关键词，属于真歧义 → 澄清
+    if hit_retrieval and hit_nl2sql:
+        return Intent.CLARIFY
+    if hit_retrieval:
         return Intent.RETRIEVAL
-    if any(kw in q for kw in _NL2SQL_KEYWORDS):
+    if hit_nl2sql:
         return Intent.NL2SQL
-    return Intent.RETRIEVAL
+    # 未命中任何业务关键词 → 自由对话（问候、闲聊、通用问答）
+    return Intent.CHAT

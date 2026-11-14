@@ -1,5 +1,59 @@
 <template>
   <div class="chat-page">
+    <aside v-show="historyVisible" class="history-panel panel">
+      <div class="history-head">
+        <span class="history-title-label">历史对话</span>
+        <el-button link size="small" :icon="Plus" @click="newSession">新会话</el-button>
+      </div>
+
+      <el-input
+        v-model="sessionKeyword"
+        class="history-search"
+        size="small"
+        clearable
+        placeholder="搜索关键词"
+        :prefix-icon="Search"
+        @keyup.enter="loadSessions"
+        @clear="loadSessions"
+      />
+      <el-date-picker
+        v-model="dateRange"
+        type="daterange"
+        size="small"
+        value-format="YYYY-MM-DD"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        unlink-panels
+        teleported
+        class="history-date"
+        popper-class="history-date-popper"
+        style="width: 100%; height: 30px"
+        @change="loadSessions"
+      />
+
+      <div class="history-list">
+        <div v-if="sessionsLoading" class="history-empty">加载中...</div>
+        <div v-else-if="sessionsError" class="history-empty history-error">{{ sessionsError }}</div>
+        <div v-else-if="sessions.length === 0" class="history-empty">暂无历史对话</div>
+        <template v-else>
+          <button
+            v-for="item in sessions"
+            :key="item.session_id"
+            class="history-item"
+            :class="{ active: item.session_id === activeSessionId }"
+            @click="selectSession(item)"
+          >
+            <span class="history-item-title">{{ item.title }}</span>
+            <span class="history-item-preview">{{ item.preview || '—' }}</span>
+            <span class="history-item-meta">
+              <span>{{ item.last_active_at ? formatDateTime(item.last_active_at) : '' }}</span>
+              <span>{{ item.message_count }} 条</span>
+            </span>
+          </button>
+        </template>
+      </div>
+    </aside>
+
     <div class="chat-shell panel">
       <header class="chat-header">
         <div>
@@ -12,11 +66,15 @@
           <el-tag v-if="lastModel" size="small" type="success" effect="plain">
             {{ lastModel.provider }} · {{ lastModel.model }}
           </el-tag>
+          <el-button size="small" :icon="Clock" @click="historyVisible = !historyVisible">
+            {{ historyVisible ? '收起历史' : '历史对话' }}
+          </el-button>
           <el-button size="small" :icon="Plus" @click="newSession">新会话</el-button>
         </div>
       </header>
 
-      <div ref="scrollRef" class="chat-scroll">
+      <div ref="scrollRef" class="chat-scroll" :class="{ 'is-loading-history': historyLoading }">
+        <div v-if="historyLoading" class="history-loading-mask">正在加载历史消息...</div>
         <div v-if="messages.length === 0" class="chat-welcome">
           <div class="welcome-icon">
             <el-icon><ChatDotRound /></el-icon>
@@ -152,6 +210,22 @@
                 <span>{{ msg.error }}</span>
               </div>
               <div v-if="msg.status === 'stopped'" class="muted stopped-line">已停止生成</div>
+
+              <!-- 重试 / 重新生成按钮：只在本轮已结束且上一条是 user 时显示 -->
+              <div
+                v-if="!streaming && (msg.status === 'done' || msg.status === 'error' || msg.status === 'stopped')"
+                class="retry-line"
+              >
+                <el-button
+                  size="small"
+                  link
+                  type="primary"
+                  :icon="Refresh"
+                  @click="retryFromMessage(msg)"
+                >
+                  重新生成
+                </el-button>
+              </div>
             </template>
           </div>
         </div>
@@ -190,7 +264,7 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, reactive, ref } from 'vue'
+import { nextTick, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import {
@@ -199,15 +273,19 @@ import {
   ChatDotRound,
   CircleClose,
   CircleCloseFilled,
+  Clock,
   Grid,
   Plus,
-  Promotion
+  Promotion,
+  Refresh,
+  Search
 } from '@element-plus/icons-vue'
 
 import CitationList from '@/components/CitationList.vue'
 import EChart from '@/components/EChart.vue'
 import ResultTable from '@/components/ResultTable.vue'
-import { streamChat } from '@/api/chat'
+import { fetchSessionMessages, listSessions, streamChat } from '@/api/chat'
+import type { ChatSessionItem } from '@/api/chat'
 import { formatDateTime, intentLabel } from '@/utils/format'
 import { renderMarkdown } from '@/utils/markdown'
 import type {
@@ -234,6 +312,16 @@ const streaming = ref(false)
 const scrollRef = ref<HTMLDivElement>()
 const sqlOpen = reactive<Record<string, boolean>>({})
 const lastModel = ref<ModelInfo | null>(null)
+
+// 历史对话
+const historyVisible = ref(true)
+const sessions = ref<ChatSessionItem[]>([])
+const sessionKeyword = ref('')
+const dateRange = ref<[string, string] | null>(null)
+const sessionsLoading = ref(false)
+const sessionsError = ref('')
+const activeSessionId = ref<string | null>(null)
+const historyLoading = ref(false)
 
 let sessionId = createSessionId()
 let controller: AbortController | null = null
@@ -265,6 +353,56 @@ function safeParse<T>(data: string): T | null {
   }
 }
 
+// ---------------------------------------------------------------------------
+// 历史对话：列表查询 + 切换加载
+// ---------------------------------------------------------------------------
+
+async function loadSessions(): Promise<void> {
+  sessionsLoading.value = true
+  sessionsError.value = ''
+  try {
+    const [startDate, endDate] = dateRange.value || ['', '']
+    sessions.value = await listSessions({
+      keyword: sessionKeyword.value.trim() || undefined,
+      start: startDate ? `${startDate}T00:00:00` : undefined,
+      end: endDate ? `${endDate}T23:59:59` : undefined
+    })
+  } catch (error) {
+    sessionsError.value = error instanceof Error ? error.message : '历史对话加载失败'
+  } finally {
+    sessionsLoading.value = false
+  }
+}
+
+async function selectSession(item: ChatSessionItem): Promise<void> {
+  if (streaming.value) {
+    ElMessage.warning('请先停止当前回答再切换会话')
+    return
+  }
+  if (item.session_id === activeSessionId.value) return
+
+  activeSessionId.value = item.session_id
+  sessionId = item.session_id
+  lastModel.value = null
+  historyLoading.value = true
+  try {
+    const list = await fetchSessionMessages(item.session_id)
+    messages.value = list.map((m) => ({
+      id: `history-${m.id}`,
+      role: m.role,
+      content: m.content,
+      status: 'done' as const,
+      createdAt: m.created_at ? new Date(m.created_at).getTime() : Date.now(),
+      citations: m.citations || []
+    }))
+    scrollToBottom()
+  } catch (error) {
+    ElMessage.error(error instanceof Error ? error.message : '历史消息加载失败')
+  } finally {
+    historyLoading.value = false
+  }
+}
+
 async function send(): Promise<void> {
   const question = input.value.trim()
   if (!question || streaming.value) return
@@ -293,7 +431,55 @@ async function send(): Promise<void> {
     streaming.value = false
     controller = null
     scrollToBottom()
+    // 本轮结束后刷新历史列表，并把当前会话置为高亮
+    activeSessionId.value = sessionId
+    void loadSessions()
   }
+}
+
+function retryFromMessage(assistantMsg: ChatMessage): void {
+  // 重新生成：找到这条 assistant 上一条 user 消息，清空 assistant 后重发请求
+  if (streaming.value) return
+  if (assistantMsg.role !== 'assistant') return
+
+  const idx = messages.value.findIndex((m) => m.id === assistantMsg.id)
+  if (idx < 1) return
+  const prev = messages.value[idx - 1]
+  if (prev.role !== 'user') return
+
+  const question = prev.content
+  // 清空 assistant 这条（保留 id 以便 UI 渲染同一位置）
+  assistantMsg.content = ''
+  assistantMsg.intent = undefined
+  assistantMsg.sql = undefined
+  assistantMsg.result = undefined
+  assistantMsg.report = undefined
+  assistantMsg.citations = []
+  assistantMsg.review = undefined
+  assistantMsg.model = undefined
+  assistantMsg.error = undefined
+  assistantMsg.status = 'streaming'
+
+  controller = new AbortController()
+  streaming.value = true
+  scrollToBottom()
+  streamChat(question, sessionId, (event, data) => handleEvent(assistantMsg, event, data), controller.signal)
+    .then(() => {
+      if (assistantMsg.status === 'streaming') assistantMsg.status = 'done'
+    })
+    .catch((err) => {
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        assistantMsg.status = 'stopped'
+      } else {
+        assistantMsg.status = 'error'
+        assistantMsg.error = err instanceof Error ? err.message : '重新生成失败'
+      }
+    })
+    .finally(() => {
+      streaming.value = false
+      controller = null
+      scrollToBottom()
+    })
 }
 
 function handleEvent(msg: ChatMessage, event: string, data: string): void {
@@ -408,9 +594,14 @@ function newSession(): void {
   }
   messages.value = []
   sessionId = createSessionId()
+  activeSessionId.value = null
   lastModel.value = null
   ElMessage.success('已创建新会话')
 }
+
+onMounted(() => {
+  void loadSessions()
+})
 
 function useSuggestion(question: string): void {
   input.value = question
@@ -443,15 +634,231 @@ function scrollToBottom(): void {
 
 <style scoped>
 .chat-page {
+  position: relative;
+  display: flex;
+  gap: 14px;
   height: 100%;
   padding: 16px;
 }
 
+/* ---------------- 历史对话侧栏 ---------------- */
+.history-panel {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  /* 随视口自适应，上下限保证窄屏不挤压、宽屏不过度拉伸 */
+  width: clamp(216px, 22vw, 280px);
+  min-width: 0;
+  padding: 14px 12px;
+  overflow: hidden;
+}
+
+.history-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.history-title-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+}
+
+/* 搜索框与日期选择器统一：撑满侧栏、禁止被 flex 压缩、高度一致 */
+.history-search,
+.history-date {
+  flex: none;
+  width: 100%;
+  min-width: 0;
+}
+
+.history-search :deep(.el-input__wrapper) {
+  height: 30px;
+  box-sizing: border-box;
+}
+
+/* 日期范围选择器默认固定 350px 宽、内部输入框 39% 固定宽度，
+   窄侧栏下会溢出并被裁切，这里统一改为撑满 + 可收缩 */
+.history-panel :deep(.el-date-editor),
+.history-panel :deep(.el-range-editor),
+.history-date {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.history-panel :deep(.el-range-editor),
+.history-date {
+  height: 30px !important;
+  min-height: 30px !important;
+  max-height: 30px !important;
+  padding: 0 8px;
+  box-sizing: border-box !important;
+}
+
+/* 分隔符曾被拉伸到容器高度（282px），显式固定自身高度并居中 */
+.history-panel :deep(.el-range-separator) {
+  flex: 0 0 auto;
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  height: 22px !important;
+  padding: 0 2px;
+  font-size: 11px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.history-panel :deep(.el-range-input) {
+  flex: 1 1 0;
+  width: 0 !important;
+  min-width: 0 !important;
+  font-size: 12px;
+  line-height: 1;
+  text-align: center;
+}
+
+.history-panel :deep(.el-range__icon),
+.history-panel :deep(.el-range__close-icon) {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+/* 弹层在窄屏下不超出视口 */
+:global(.history-date-popper) {
+  max-width: calc(100vw - 20px);
+}
+
+@media (max-width: 960px) {
+  .history-panel {
+    width: clamp(200px, 26vw, 240px);
+    padding: 12px 10px;
+  }
+
+  .history-date :deep(.el-range-input) {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 820px) {
+  .chat-page {
+    padding: 8px;
+  }
+
+  /* 窄屏改为浮层，避免挤压聊天区 */
+  .history-panel {
+    position: absolute;
+    inset: 8px auto 8px 8px;
+    z-index: 20;
+    width: min(280px, calc(100vw - 16px));
+    background: #ffffff;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
+  }
+}
+
+.history-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-right: 2px;
+}
+
+.history-empty {
+  padding: 24px 8px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.history-error {
+  color: #b91c1c;
+}
+
+.history-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 9px 10px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: #f8fafc;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease,
+    transform 0.18s ease;
+}
+
+.history-item:hover {
+  background: #eef4ff;
+  border-color: #bfdbfe;
+  transform: translateX(2px);
+}
+
+.history-item.active {
+  background: #e8f0ff;
+  border-color: var(--brand);
+  box-shadow: inset 3px 0 0 var(--brand);
+}
+
+.history-item-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history-item-preview {
+  font-size: 12px;
+  color: #64748b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history-item-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #94a3b8;
+}
+
 .chat-shell {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   height: 100%;
   overflow: hidden;
+}
+
+.chat-scroll {
+  position: relative;
+  transition: opacity 0.2s ease;
+}
+
+.chat-scroll.is-loading-history {
+  opacity: 0.55;
+}
+
+.history-loading-mask {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  margin: 0 auto 10px;
+  width: fit-content;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.9);
+  color: #ffffff;
+  font-size: 12px;
 }
 
 .chat-header {
@@ -730,6 +1137,12 @@ function scrollToBottom(): void {
 
 .stopped-line {
   margin-top: 8px;
+}
+
+.retry-line {
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--border);
 }
 
 .chat-input {

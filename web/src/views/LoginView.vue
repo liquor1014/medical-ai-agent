@@ -30,6 +30,23 @@
       </div>
 
       <el-form ref="formRef" :model="form" :rules="activeRules" label-position="top" @submit.prevent>
+        <el-form-item label="所属租户" prop="tenantId">
+          <el-select
+            v-model="form.tenantId"
+            size="large"
+            filterable
+            placeholder="请选择所属租户"
+            style="width: 100%"
+            :loading="tenantLoading"
+          >
+            <el-option
+              v-for="t in tenants"
+              :key="t.id"
+              :label="t.name"
+              :value="t.id"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="用户名" prop="username">
           <el-input v-model="form.username" size="large" placeholder="请输入用户名" clearable>
             <template #prefix>
@@ -110,12 +127,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
 
-import { login, register } from '@/api/auth'
+import { fetchTenants, login, register } from '@/api/auth'
+import type { TenantOption } from '@/types/api'
 import { DEFAULT_TENANT, saveSession, setTenant } from '@/store/auth'
 
 const router = useRouter()
@@ -126,7 +144,29 @@ const loading = ref(false)
 const mode = ref<'login' | 'register'>('login')
 const isRegister = computed(() => mode.value === 'register')
 
+const tenants = ref<TenantOption[]>([])
+const tenantLoading = ref(false)
+
+async function loadTenants(): Promise<void> {
+  tenantLoading.value = true
+  try {
+    const list = await fetchTenants()
+    tenants.value = list
+    // 如果当前默认租户在列表里就保持，否则选第一个
+    if (!list.some((t) => t.id === form.tenantId) && list.length > 0) {
+      form.tenantId = list[0].id
+    }
+  } catch (error) {
+    ElMessage.warning('租户列表加载失败，使用默认租户')
+  } finally {
+    tenantLoading.value = false
+  }
+}
+
+onMounted(loadTenants)
+
 const form = reactive({
+  tenantId: DEFAULT_TENANT,
   username: '',
   password: '',
   confirmPassword: '',
@@ -146,11 +186,13 @@ function validateConfirmPassword(
 }
 
 const loginRules: FormRules = {
+  tenantId: [{ required: true, message: '请选择所属租户', trigger: 'change' }],
   username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
   password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
 }
 
 const registerRules: FormRules = {
+  tenantId: [{ required: true, message: '请选择所属租户', trigger: 'change' }],
   username: [
     { required: true, message: '请输入用户名', trigger: 'blur' },
     { pattern: /^[A-Za-z0-9_]{3,32}$/, message: '用户名需为 3-32 位字母、数字或下划线', trigger: 'blur' }
@@ -195,7 +237,7 @@ async function onSubmit(): Promise<void> {
         })
       : await login(username, form.password)
     saveSession(result.token, result.username)
-    setTenant(DEFAULT_TENANT)
+    setTenant(form.tenantId)
     ElMessage.success(isRegister.value ? '注册成功，已自动登录' : '登录成功')
     const redirect = (route.query.redirect as string) || '/files'
     await router.replace(redirect)

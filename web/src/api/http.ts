@@ -72,6 +72,14 @@ export function apiPost<T>(url: string, data?: unknown, config?: AxiosRequestCon
   return request<T>({ ...config, url, method: 'POST', data })
 }
 
+export function apiPut<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
+  return request<T>({ ...config, url, method: 'PUT', data })
+}
+
+export function apiPatch<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
+  return request<T>({ ...config, url, method: 'PATCH', data })
+}
+
 export function apiDelete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
   return request<T>({ ...config, url, method: 'DELETE' })
 }

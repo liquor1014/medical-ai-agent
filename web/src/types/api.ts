@@ -203,7 +203,23 @@ export interface ModelProvider {
   model: string
   base_url: string
   configured: boolean
+  enabled: boolean
+  source?: string
   api_key: string
+}
+
+export interface ModelProviderPayload {
+  name?: string
+  model: string
+  base_url: string
+  api_key?: string
+  enabled: boolean
+}
+
+export interface ModelProviderMutation {
+  ok: boolean
+  provider: ModelProvider
+  providers: ModelProvider[]
 }
 
 export interface ModelStat {

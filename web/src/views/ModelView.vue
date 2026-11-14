@@ -9,6 +9,7 @@
       </div>
       <div class="head-actions">
         <span class="muted updated-at">更新于 {{ lastUpdated || '-' }}</span>
+        <el-button :icon="Plus" @click="openCreate">新增模型</el-button>
         <el-button :icon="Refresh" :loading="loading" @click="refreshAll">刷新</el-button>
         <el-button type="primary" :icon="VideoPlay" @click="openTest">试调用</el-button>
       </div>
@@ -74,16 +75,21 @@
               v-for="provider in health.providers"
               :key="provider.name"
               class="provider-card"
-              :class="{ primary: primaryProviders.has(provider.name), inactive: !isInAnyRoute(provider.name) }"
+              :class="{
+                primary: primaryProviders.has(provider.name),
+                inactive: !isInAnyRoute(provider.name),
+                disabled: !provider.enabled
+              }"
             >
               <div class="provider-head">
                 <span class="provider-name">{{ provider.name }}</span>
                 <div class="provider-tags">
-                  <el-tag v-if="primaryProviders.has(provider.name)" size="small" type="success" effect="light">
+                  <el-tag v-if="!provider.enabled" size="small" type="info" effect="light">已停用</el-tag>
+                  <el-tag v-else-if="primaryProviders.has(provider.name)" size="small" type="success" effect="light">
                     首选
                   </el-tag>
                   <el-tag v-else-if="isInAnyRoute(provider.name)" size="small" effect="plain">备用</el-tag>
-                  <el-tag v-else size="small" type="info" effect="plain">未启用</el-tag>
+                  <el-tag v-else size="small" type="info" effect="plain">未加入路由</el-tag>
                   <el-tag :type="provider.configured ? 'success' : 'danger'" size="small" effect="plain">
                     {{ provider.configured ? '已配置' : '缺少 Key' }}
                   </el-tag>
@@ -94,13 +100,27 @@
                 <span class="mono">{{ provider.base_url }}</span>
                 <span class="mono">{{ provider.api_key }}</span>
               </div>
-              <div class="provider-stats muted">
-                <template v-if="providerStats(provider.name)">
-                  24h {{ providerStats(provider.name)?.calls }} 次 · 平均
-                  {{ providerStats(provider.name)?.avg }} ms · 失败
-                  {{ providerStats(provider.name)?.errors }} 次
-                </template>
-                <template v-else>近 24h 暂无调用</template>
+              <div class="provider-foot">
+                <div class="provider-stats muted">
+                  <template v-if="providerStats(provider.name)">
+                    24h {{ providerStats(provider.name)?.calls }} 次 · 平均
+                    {{ providerStats(provider.name)?.avg }} ms · 失败
+                    {{ providerStats(provider.name)?.errors }} 次
+                  </template>
+                  <template v-else>近 24h 暂无调用</template>
+                </div>
+                <div class="provider-actions">
+                  <el-button link type="primary" size="small" @click="openEdit(provider)">编辑</el-button>
+                  <el-button
+                    link
+                    :type="provider.enabled ? 'warning' : 'success'"
+                    size="small"
+                    :loading="togglingName === provider.name"
+                    @click="toggleProvider(provider)"
+                  >
+                    {{ provider.enabled ? '停用' : '启用' }}
+                  </el-button>
+                </div>
               </div>
             </div>
           </div>
@@ -277,24 +297,79 @@
         <el-button type="primary" :loading="testing" @click="runTest">开始试调用</el-button>
       </template>
     </el-dialog>
+
+    <el-dialog
+      v-model="configVisible"
+      :title="configMode === 'create' ? '新增模型提供者' : '编辑模型配置'"
+      width="560px"
+      :close-on-click-modal="false"
+    >
+      <el-form ref="configFormRef" :model="configForm" :rules="configRules" label-position="top">
+        <el-form-item label="提供者名称" prop="name">
+          <el-input
+            v-model="configForm.name"
+            :disabled="configMode === 'edit'"
+            placeholder="如 my-deepseek，仅支持小写字母/数字/下划线/中划线"
+          />
+          <div class="form-tip muted">
+            名称作为任务路由中的唯一标识，创建后不可修改；mock 为系统保留名称。
+          </div>
+        </el-form-item>
+        <el-form-item label="模型名称" prop="model">
+          <el-input v-model="configForm.model" placeholder="如 deepseek-chat / qwen-plus / gpt-4o-mini" />
+        </el-form-item>
+        <el-form-item label="Base URL" prop="base_url">
+          <el-input v-model="configForm.base_url" placeholder="OpenAI 兼容接口地址，如 https://api.deepseek.com/v1" />
+        </el-form-item>
+        <el-form-item label="API Key" prop="api_key">
+          <el-input
+            v-model="configForm.api_key"
+            type="password"
+            show-password
+            :placeholder="configMode === 'edit' ? '留空表示保持原 Key 不变' : '输入模型服务 API Key（ollama 可留空）'"
+          />
+          <div class="form-tip muted">
+            已保存的 Key 不会明文回显；编辑时留空即沿用原 Key。
+          </div>
+        </el-form-item>
+        <el-form-item label="启用状态">
+          <el-switch v-model="configForm.enabled" active-text="启用" inactive-text="停用" />
+          <div class="form-tip muted">停用后任务路由会跳过该提供者，配置仍会保留。</div>
+        </el-form-item>
+      </el-form>
+
+      <template #footer>
+        <el-button @click="configVisible = false">取消</el-button>
+        <el-button type="primary" :loading="saving" @click="submitConfig">
+          {{ configMode === 'create' ? '新增模型' : '保存配置' }}
+        </el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
-import { ElMessage } from 'element-plus'
-import { Refresh, Right, VideoPlay } from '@element-plus/icons-vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import type { FormInstance, FormRules } from 'element-plus'
+import { Plus, Refresh, Right, VideoPlay } from '@element-plus/icons-vue'
 
 import {
+  createModelProvider,
   getModelHealth,
   getModelLogs,
   resetModelRoutes,
-  testModel
+  setModelProviderEnabled,
+  testModel,
+  updateModelProvider
 } from '@/api/models'
 import { formatDateTime } from '@/utils/format'
 import type {
   ModelCallLog,
   ModelHealth,
+  ModelProvider,
+  ModelProviderMutation,
+  ModelProviderPayload,
   ModelTestResult
 } from '@/types/api'
 
@@ -313,6 +388,66 @@ const testForm = reactive({
   task: 'chat',
   question: '用一句话说明当前使用的是哪个模型'
 })
+
+const configVisible = ref(false)
+const configMode = ref<'create' | 'edit'>('create')
+const saving = ref(false)
+const togglingName = ref('')
+const configFormRef = ref<FormInstance>()
+
+const configForm = reactive({
+  name: '',
+  model: '',
+  base_url: '',
+  api_key: '',
+  enabled: true
+})
+
+const NAME_PATTERN = /^[a-z][a-z0-9_-]{1,31}$/
+
+function validateProviderName(
+  _rule: unknown,
+  value: unknown,
+  callback: (error?: string | Error) => void
+): void {
+  const name = String(value || '').trim()
+  if (!name) {
+    callback(new Error('请输入提供者名称'))
+    return
+  }
+  if (!NAME_PATTERN.test(name)) {
+    callback(new Error('需为 2-32 位小写字母、数字、下划线或中划线，且以字母开头'))
+    return
+  }
+  if (name === 'mock') {
+    callback(new Error('mock 为系统保留名称'))
+    return
+  }
+  callback()
+}
+
+function validateApiKey(
+  _rule: unknown,
+  value: unknown,
+  callback: (error?: string | Error) => void
+): void {
+  const key = String(value || '').trim()
+  if (configMode.value === 'create' && configForm.name.trim() !== 'ollama' && !key) {
+    callback(new Error('请输入 API Key（ollama 可留空）'))
+    return
+  }
+  callback()
+}
+
+const configRules: FormRules = {
+  name: [{ validator: validateProviderName, trigger: 'blur' }],
+  model: [{ required: true, message: '请输入模型名称', trigger: 'blur' }],
+  base_url: [
+    { required: true, message: '请输入 Base URL', trigger: 'blur' },
+    { pattern: /^https?:\/\//, message: '需以 http:// 或 https:// 开头', trigger: 'blur' }
+  ],
+  api_key: [{ validator: validateApiKey, trigger: 'blur' }]
+}
 
 let timer: number | undefined
 let healthFetching = false
@@ -458,6 +593,112 @@ async function resetRoutes(): Promise<void> {
   }
 }
 
+function applyProviders(result: ModelProviderMutation): void {
+  if (health.value) {
+    health.value.providers = result.providers
+  }
+}
+
+function openCreate(): void {
+  configMode.value = 'create'
+  configForm.name = ''
+  configForm.model = ''
+  configForm.base_url = ''
+  configForm.api_key = ''
+  configForm.enabled = true
+  configVisible.value = true
+  nextTick(() => configFormRef.value?.clearValidate())
+}
+
+function openEdit(provider: ModelProvider): void {
+  configMode.value = 'edit'
+  configForm.name = provider.name
+  configForm.model = provider.model
+  configForm.base_url = provider.base_url
+  configForm.api_key = ''
+  configForm.enabled = provider.enabled
+  configVisible.value = true
+  nextTick(() => configFormRef.value?.clearValidate())
+}
+
+async function submitConfig(): Promise<void> {
+  const form = configFormRef.value
+  if (!form) return
+  const valid = await form.validate().catch(() => false)
+  if (!valid) return
+
+  const name = configForm.name.trim().toLowerCase()
+  const actionText = configMode.value === 'create' ? '新增' : '保存'
+  try {
+    await ElMessageBox.confirm(
+      `确认${actionText}模型提供者 ${name}？模型 ${configForm.model.trim()} · ${configForm.enabled ? '启用' : '停用'}`,
+      `${actionText}确认`,
+      {
+        type: 'warning',
+        confirmButtonText: `确认${actionText}`,
+        cancelButtonText: '取消'
+      }
+    )
+  } catch {
+    return
+  }
+
+  saving.value = true
+  try {
+    const payload: ModelProviderPayload = {
+      name,
+      model: configForm.model.trim(),
+      base_url: configForm.base_url.trim(),
+      api_key: configForm.api_key.trim(),
+      enabled: configForm.enabled
+    }
+    const result =
+      configMode.value === 'create'
+        ? await createModelProvider(payload)
+        : await updateModelProvider(name, payload)
+    applyProviders(result)
+    ElMessage.success(configMode.value === 'create' ? '模型提供者已新增' : '模型配置已保存')
+    configVisible.value = false
+    await loadHealth(true)
+  } catch (error) {
+    ElMessage.error(error instanceof Error ? error.message : `${actionText}模型配置失败`)
+  } finally {
+    saving.value = false
+  }
+}
+
+async function toggleProvider(provider: ModelProvider): Promise<void> {
+  const enable = !provider.enabled
+  const actionText = enable ? '启用' : '停用'
+  try {
+    await ElMessageBox.confirm(
+      enable
+        ? `确认启用模型 ${provider.name}？启用后将重新参与任务路由。`
+        : `确认停用模型 ${provider.name}？停用后任务路由会跳过该提供者。`,
+      `${actionText}确认`,
+      {
+        type: enable ? 'info' : 'warning',
+        confirmButtonText: `确认${actionText}`,
+        cancelButtonText: '取消'
+      }
+    )
+  } catch {
+    return
+  }
+
+  togglingName.value = provider.name
+  try {
+    const result = await setModelProviderEnabled(provider.name, enable)
+    applyProviders(result)
+    ElMessage.success(`${provider.name} 已${actionText}`)
+    await loadHealth(true)
+  } catch (error) {
+    ElMessage.error(error instanceof Error ? error.message : `${actionText}模型失败`)
+  } finally {
+    togglingName.value = ''
+  }
+}
+
 function openTest(): void {
   testResult.value = null
   testVisible.value = true
@@ -599,6 +840,11 @@ async function runTest(): Promise<void> {
   opacity: 0.72;
 }
 
+.provider-card.disabled {
+  background: #f8fafc;
+  border-style: dashed;
+}
+
 .provider-head {
   display: flex;
   align-items: center;
@@ -637,9 +883,30 @@ async function runTest(): Promise<void> {
   font-family: Consolas, 'Courier New', monospace;
 }
 
-.provider-stats {
+.provider-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
   margin-top: 8px;
+}
+
+.provider-stats {
   font-size: 12px;
+}
+
+.provider-actions {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.form-tip {
+  width: 100%;
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .route-list {

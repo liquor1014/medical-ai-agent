@@ -8,8 +8,20 @@ class Settings(BaseSettings):
 
     app_env: str = "dev"
     postgres_dsn: str = "postgresql://medical:medical123@localhost:5432/medical_ai"
+
+    # ===== Qdrant 向量库 =====
     qdrant_url: str = "http://localhost:6333"
     qdrant_collection: str = "medical_docs"
+    qdrant_timeout: float = 5.0          # 单次请求超时（秒）
+    qdrant_retries: int = 2              # 连接失败重试次数（除首次外）
+    qdrant_embedding_dim: int = 384      # 默认 all-MiniLM-L6-v2 输出维度；实际以 ensure_collection(dim) 推断为准
+
+    # ===== Embedding 模型 =====
+    # 可选："sentence_transformers"（本地）、"mock"（返回随机向量，用于无模型环境）
+    embedding_backend: str = "sentence_transformers"
+    embedding_model_name: str = "all-MiniLM-L6-v2"
+
+    # ===== Redis =====
     redis_url: str = "redis://localhost:6379/0"
     minio_endpoint: str = "localhost:9000"
     minio_access_key: str = "minioadmin"

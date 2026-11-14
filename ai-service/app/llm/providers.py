@@ -47,11 +47,18 @@ class ProviderSpec:
     api_key: str
     base_url: str
     model: str
+    enabled: bool = True
+    source: str = "env"
 
     @property
     def configured(self) -> bool:
         # Ollama 是本地服务，不需要 Key
         return bool(self.api_key) or self.name == "ollama"
+
+    @property
+    def available(self) -> bool:
+        """真正参与路由：已配置且未被停用。"""
+        return self.configured and self.enabled
 
 
 @dataclass
@@ -119,6 +126,14 @@ class OpenAICompatProvider:
     @property
     def configured(self) -> bool:
         return self.spec.configured
+
+    @property
+    def enabled(self) -> bool:
+        return self.spec.enabled
+
+    @property
+    def available(self) -> bool:
+        return self.spec.available
 
     def _client(self):
         from openai import AsyncOpenAI  # type: ignore
@@ -216,7 +231,7 @@ class ModelRouter:
         """所有任务的路由中都没有可用的真实提供者时为 mock 模式。"""
         names = {name for route in self._routes.values() for name in route}
         return not any(
-            name in self._providers and self._providers[name].configured  # type: ignore[attr-defined]
+            name in self._providers and self._providers[name].available  # type: ignore[attr-defined]
             for name in names
         )
 
@@ -225,7 +240,7 @@ class ModelRouter:
         return any(
             name != MOCK_PROVIDER
             and name in self._providers
-            and self._providers[name].configured  # type: ignore[attr-defined]
+            and self._providers[name].available  # type: ignore[attr-defined]
             for name in self.route_for(task)
         )
 
@@ -253,17 +268,21 @@ class ModelRouter:
         self._routes = {k: list(v) for k, v in self._default_routes.items()}
         return self.describe()["routes"]
 
+    def provider_info(self, name: str) -> dict:
+        """单个提供者的对外描述（api_key 已脱敏）。"""
+        spec = self._providers[name].spec  # type: ignore[attr-defined]
+        return {
+            "name": name,
+            "model": spec.model,
+            "base_url": spec.base_url,
+            "configured": spec.configured,
+            "enabled": spec.enabled,
+            "source": spec.source,
+            "api_key": _mask_key(spec.api_key) if name != "ollama" else "(local)",
+        }
+
     def describe(self) -> dict:
-        providers = []
-        for name, provider in self._providers.items():
-            spec = provider.spec  # type: ignore[attr-defined]
-            providers.append({
-                "name": name,
-                "model": spec.model,
-                "base_url": spec.base_url,
-                "configured": spec.configured,
-                "api_key": _mask_key(spec.api_key) if name != "ollama" else "(local)",
-            })
+        providers = [self.provider_info(name) for name in self._providers]
         return {
             "mock_mode": self.mock_mode,
             "timeout_seconds": self._timeout,
@@ -272,6 +291,66 @@ class ModelRouter:
             "providers": providers,
             "log_to_db": self._log_to_db,
         }
+
+    # ---------- 提供者运行时配置 ----------
+    def get_provider_spec(self, name: str) -> Optional[ProviderSpec]:
+        provider = self._providers.get(name)
+        return provider.spec if provider is not None else None  # type: ignore[attr-defined]
+
+    def upsert_provider(
+        self,
+        name: str,
+        model: str,
+        base_url: str,
+        api_key: str = "",
+        enabled: bool = True,
+        source: str = "custom",
+    ) -> dict:
+        """注册或更新提供者；api_key 为空时保留原有 Key（编辑场景）。"""
+        name = (name or "").strip().lower()
+        existing = self.get_provider_spec(name)
+        if not api_key and existing is not None:
+            api_key = existing.api_key
+        spec = ProviderSpec(
+            name=name,
+            api_key=api_key or "",
+            base_url=base_url,
+            model=model,
+            enabled=bool(enabled),
+            source=source or (existing.source if existing else "custom"),
+        )
+        self._providers[name] = OpenAICompatProvider(spec)
+        logger.info("模型提供者已更新: name=%s model=%s enabled=%s source=%s",
+                    name, model, enabled, spec.source)
+        return self.provider_info(name)
+
+    def set_provider_enabled(self, name: str, enabled: bool) -> dict:
+        provider = self._providers.get(name)
+        if provider is None:
+            raise KeyError(name)
+        provider.spec.enabled = bool(enabled)  # type: ignore[attr-defined]
+        logger.info("模型提供者状态切换: name=%s enabled=%s", name, enabled)
+        return self.provider_info(name)
+
+    def apply_provider_configs(self, configs: list[dict]) -> int:
+        """启动时加载持久化配置，覆盖环境变量默认值。"""
+        applied = 0
+        for cfg in configs:
+            name = (cfg.get("name") or "").strip().lower()
+            if not name:
+                continue
+            self._providers[name] = OpenAICompatProvider(ProviderSpec(
+                name=name,
+                api_key=cfg.get("api_key") or "",
+                base_url=cfg.get("base_url") or "",
+                model=cfg.get("model") or "",
+                enabled=bool(cfg.get("enabled", True)),
+                source=cfg.get("source") or "custom",
+            ))
+            applied += 1
+        if applied:
+            logger.info("已加载 %d 条持久化模型提供者配置", applied)
+        return applied
 
     def get_trace(self, trace_id: str) -> Optional[dict]:
         return self._traces.get(trace_id)
@@ -309,7 +388,7 @@ class ModelRouter:
             if name == MOCK_PROVIDER:
                 break
             provider = self._providers.get(name)
-            if provider is None or not provider.configured:
+            if provider is None or not provider.available:
                 continue
 
             attempt_started = time.perf_counter()
@@ -395,7 +474,7 @@ class ModelRouter:
             if name == MOCK_PROVIDER:
                 break
             provider = self._providers.get(name)
-            if provider is None or not provider.configured:
+            if provider is None or not provider.available:
                 continue
 
             attempt_started = time.perf_counter()

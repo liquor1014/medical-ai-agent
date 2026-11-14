@@ -11,7 +11,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -60,6 +63,22 @@ public class ModelController {
         return Result.success(post("/api/models/switch", body, Duration.ofSeconds(20)));
     }
 
+    @PostMapping("/providers")
+    public Result<JsonNode> createProvider(@RequestBody JsonNode body) {
+        return Result.success(post("/api/models/providers", body, Duration.ofSeconds(20)));
+    }
+
+    @PutMapping("/providers/{name}")
+    public Result<JsonNode> updateProvider(@PathVariable String name, @RequestBody JsonNode body) {
+        return Result.success(put("/api/models/providers/" + name, body, Duration.ofSeconds(20)));
+    }
+
+    @PatchMapping("/providers/{name}/enabled")
+    public Result<JsonNode> toggleProvider(@PathVariable String name, @RequestBody JsonNode body) {
+        return Result.success(patch(
+                "/api/models/providers/" + name + "/enabled", body, Duration.ofSeconds(20)));
+    }
+
     @PostMapping("/test")
     public Result<JsonNode> test(@RequestBody(required = false) JsonNode body) {
         ObjectNode payload = body != null && body.isObject()
@@ -86,6 +105,18 @@ public class ModelController {
     }
 
     private JsonNode post(String path, JsonNode payload, Duration timeout) {
+        return send("POST", path, payload, timeout);
+    }
+
+    private JsonNode put(String path, JsonNode payload, Duration timeout) {
+        return send("PUT", path, payload, timeout);
+    }
+
+    private JsonNode patch(String path, JsonNode payload, Duration timeout) {
+        return send("PATCH", path, payload, timeout);
+    }
+
+    private JsonNode send(String method, String path, JsonNode payload, Duration timeout) {
         String body;
         try {
             body = objectMapper.writeValueAsString(payload);
@@ -96,7 +127,7 @@ public class ModelController {
                 .uri(URI.create(aiServiceUrl + path))
                 .header("Content-Type", "application/json; charset=utf-8")
                 .timeout(timeout)
-                .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
+                .method(method, HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
                 .build();
         return execute(request);
     }

@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -15,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -41,8 +43,7 @@ public class ChatController {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @PostMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter stream(@Valid @RequestBody ChatRequest req) {
+    @PostMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)    public SseEmitter stream(@Valid @RequestBody ChatRequest req) {
         String tenantId = TenantContext.getTenantId();
         String username = UserContext.getUsername();
         log.info("对话请求: user={}, tenant={}, question={}", username, tenantId, req.getQuestion());
@@ -132,5 +133,65 @@ public class ChatController {
                 });
 
         return emitter;
+    }
+
+    // -----------------------------------------------------------------------
+    // 历史会话查询（代理到 AI 服务的只读接口）
+    // -----------------------------------------------------------------------
+
+    /** 历史会话列表：按关键词 / 时间范围过滤，最后活跃时间倒序。 */
+    @GetMapping("/sessions")
+    public ResponseEntity<String> listSessions(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String start,
+            @RequestParam(required = false) String end,
+            @RequestParam(defaultValue = "50") int limit) {
+        String tenantId = TenantContext.getTenantId();
+        StringBuilder url = new StringBuilder(aiServiceUrl)
+                .append("/api/chat/sessions?tenant_id=").append(encode(tenantId))
+                .append("&limit=").append(Math.max(1, Math.min(limit, 200)));
+        if (keyword != null && !keyword.isBlank()) {
+            url.append("&keyword=").append(encode(keyword.trim()));
+        }
+        if (start != null && !start.isBlank()) {
+            url.append("&start=").append(encode(start));
+        }
+        if (end != null && !end.isBlank()) {
+            url.append("&end=").append(encode(end));
+        }
+        return getJson(url.toString());
+    }
+
+    /** 会话完整消息流（时间升序），用于前端恢复历史对话。 */
+    @GetMapping("/sessions/{sessionId}/messages")
+    public ResponseEntity<String> sessionMessages(@PathVariable String sessionId) {
+        String tenantId = TenantContext.getTenantId();
+        String url = aiServiceUrl + "/api/chat/sessions/" + encode(sessionId)
+                + "/messages?tenant_id=" + encode(tenantId);
+        return getJson(url);
+    }
+
+    private String encode(String value) {
+        return URLEncoder.encode(value == null ? "" : value, StandardCharsets.UTF_8);
+    }
+
+    private ResponseEntity<String> getJson(String url) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .timeout(Duration.ofSeconds(15))
+                    .GET()
+                    .build();
+            HttpResponse<String> response = httpClient.send(
+                    request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+            return ResponseEntity.status(response.statusCode())
+                    .contentType(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
+                    .body(response.body());
+        } catch (Exception e) {
+            log.error("查询历史对话失败 url={}", url, e);
+            return ResponseEntity.status(502)
+                    .contentType(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
+                    .body("{\"message\":\"历史对话查询失败\"}");
+        }
     }
 }
