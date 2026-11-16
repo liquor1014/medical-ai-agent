@@ -35,16 +35,16 @@ public class JwtTokenService {
     }
 
     /**
-     * 签发 Token，jti 用于关联 Redis 会话
+     * 签发 Token，jti 用于关联 Redis 会话；tenantId 与 role 来自用户-租户绑定关系
      */
-    public String createToken(UserAccount user, String jti) {
+    public String createToken(UserAccount user, String tenantId, String role, String jti) {
         Instant now = Instant.now();
         return Jwts.builder()
                 .subject(user.getUsername())
                 .id(jti)
-                .claim("tenantId", user.getTenantId())
+                .claim("tenantId", tenantId)
                 .claim("displayName", user.getDisplayName())
-                .claim("role", user.getRole())
+                .claim("role", role)
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plus(ttl)))
                 .signWith(key, Jwts.SIG.HS256)

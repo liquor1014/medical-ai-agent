@@ -15,6 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * 注册请求参数校验单元测试
+ * 说明：密码复杂度（长度 / 字符类别）由 PasswordPolicy 在服务层统一校验
  */
 class RegisterRequestValidationTest {
 
@@ -41,7 +42,7 @@ class RegisterRequestValidationTest {
     private RegisterRequest validRequest() {
         RegisterRequest req = new RegisterRequest();
         req.setUsername("nurse01");
-        req.setPassword("nurse123");
+        req.setPassword("Nurse@123");
         return req;
     }
 
@@ -79,17 +80,32 @@ class RegisterRequestValidationTest {
     }
 
     @Test
-    void tooShortPassword_shouldFail() {
-        RegisterRequest req = validRequest();
-        req.setPassword("12345");
-        assertThat(messages(req)).contains("密码长度需为 6-64 位");
-    }
-
-    @Test
     void tooLongPassword_shouldFail() {
         RegisterRequest req = validRequest();
         req.setPassword("a".repeat(65));
-        assertThat(messages(req)).contains("密码长度需为 6-64 位");
+        assertThat(messages(req)).contains("密码长度不能超过 64 位");
+    }
+
+    @Test
+    void shortPassword_shouldBeDeferredToPasswordPolicy() {
+        RegisterRequest req = validRequest();
+        req.setPassword("12345");
+        // DTO 不校验最小长度，复杂度由服务层 PasswordPolicy 统一拦截
+        assertThat(messages(req)).isEmpty();
+    }
+
+    @Test
+    void invalidEmail_shouldFail() {
+        RegisterRequest req = validRequest();
+        req.setEmail("not-an-email");
+        assertThat(messages(req)).contains("邮箱格式不正确");
+    }
+
+    @Test
+    void optionalEmailMayBeAbsent() {
+        RegisterRequest req = validRequest();
+        req.setEmail(null);
+        assertThat(messages(req)).isEmpty();
     }
 
     @Test

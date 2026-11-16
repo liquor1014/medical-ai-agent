@@ -2,6 +2,8 @@ package com.medicalai.common;
 
 import lombok.Data;
 
+import java.time.OffsetDateTime;
+
 /**
  * 数据库用户账号（app_user 表）
  */
@@ -14,4 +16,8 @@ public class UserAccount {
     private String displayName;
     private String role;
     private String status;
+    private String email;
+    private int failedAttempts;
+    private OffsetDateTime lockedUntil;
+    private OffsetDateTime lastLoginAt;
 }

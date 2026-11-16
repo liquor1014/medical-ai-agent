@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 
-import { getToken } from '@/store/auth'
+import { getToken, isSuperAdmin, canManageUsers, canManageRoles } from '@/store/auth'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -50,6 +50,24 @@ const routes: RouteRecordRaw[] = [
         name: 'models',
         component: () => import('@/views/ModelView.vue'),
         meta: { title: '模型健康' }
+      },
+      {
+        path: 'tenants',
+        name: 'tenants',
+        component: () => import('@/views/TenantAdminView.vue'),
+        meta: { title: '租户管理', requiresAdmin: true }
+      },
+      {
+        path: 'users',
+        name: 'users',
+        component: () => import('@/views/UserAdminView.vue'),
+        meta: { title: '用户管理', requiresUserManage: true }
+      },
+      {
+        path: 'roles',
+        name: 'roles',
+        component: () => import('@/views/RoleConfigView.vue'),
+        meta: { title: '角色配置', requiresRoleManage: true }
       }
     ]
   },
@@ -79,6 +97,15 @@ router.beforeEach((to) => {
   }
   if (!token) {
     return { path: '/login', query: { redirect: to.fullPath } }
+  }
+  if (to.meta.requiresAdmin && !isSuperAdmin()) {
+    return { path: '/403' }
+  }
+  if (to.meta.requiresUserManage && !canManageUsers()) {
+    return { path: '/403' }
+  }
+  if (to.meta.requiresRoleManage && !canManageRoles()) {
+    return { path: '/403' }
   }
   return true
 })

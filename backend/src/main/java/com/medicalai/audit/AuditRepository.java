@@ -70,6 +70,14 @@ public class AuditRepository {
         }, tenantId);
     }
 
+    /**
+     * 写入安全事件（如账号因连续登录失败被锁定），复用审计日志页面展示
+     */
+    public void insertSecurityEvent(String tenantId, long userId, String action, String result) {
+        jdbc.update("INSERT INTO audit_log (tenant_id, user_id, action, result) VALUES (?, ?, ?, ?)",
+                tenantId, userId, action, result);
+    }
+
     public long countLast24h(String tenantId) {
         String sql = """
                 SELECT COUNT(*) FROM audit_log

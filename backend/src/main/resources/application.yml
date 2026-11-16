@@ -22,12 +22,29 @@ spring:
     multipart:
       max-file-size: 50MB
       max-request-size: 100MB
+  mail:
+    # 留空表示未配置 SMTP，找回密码自动降级为演示模式（验证码随响应返回）
+    host: ${SMTP_HOST:}
+    port: ${SMTP_PORT:465}
+    username: ${SMTP_USER:}
+    password: ${SMTP_PASSWORD:}
+    from: ${SMTP_FROM:no-reply@medical-ai.local}
+    properties:
+      mail:
+        smtp:
+          auth: ${SMTP_AUTH:true}
+          ssl:
+            enable: ${SMTP_SSL:true}
 
 management:
   endpoints:
     web:
       exposure:
         include: health,info
+  health:
+    # 未配置 SMTP 时不做邮件连通性探测，避免健康检查误判为 DOWN
+    mail:
+      enabled: false
 
 app:
   tenant:
@@ -39,6 +56,22 @@ app:
       expire-hours: ${JWT_EXPIRE_HOURS:12}
     session:
       prefix: "auth:session:"
+      user-prefix: "auth:user-sessions:"
+    password:
+      # 密码复杂度：长度 + 字符类别（大写/小写/数字/特殊字符）
+      min-length: ${PASSWORD_MIN_LENGTH:8}
+      max-length: ${PASSWORD_MAX_LENGTH:64}
+      min-classes: ${PASSWORD_MIN_CLASSES:3}
+    login:
+      # 连续登录失败达到阈值后锁定账号
+      max-failures: ${LOGIN_MAX_FAILURES:5}
+      lock-minutes: ${LOGIN_LOCK_MINUTES:15}
+    reset:
+      # 验证码有效期 / 重置凭证有效期 / 发送间隔 / 每日上限
+      code-ttl-seconds: ${RESET_CODE_TTL_SECONDS:300}
+      ticket-ttl-seconds: ${RESET_TICKET_TTL_SECONDS:600}
+      interval-seconds: ${RESET_INTERVAL_SECONDS:60}
+      daily-limit: ${RESET_DAILY_LIMIT:10}
   minio:
     endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
     access-key: ${MINIO_ACCESS_KEY:minioadmin}

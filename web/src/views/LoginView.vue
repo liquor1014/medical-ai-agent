@@ -67,12 +67,28 @@
             </template>
           </el-input>
         </el-form-item>
+        <el-form-item v-if="isRegister" label="绑定邮箱" prop="email">
+          <el-input
+            v-model="form.email"
+            size="large"
+            placeholder="用于找回密码，如 name@example.com"
+            maxlength="128"
+            clearable
+          >
+            <template #prefix>
+              <el-icon><Message /></el-icon>
+            </template>
+          </el-input>
+        </el-form-item>
         <el-form-item label="密码" prop="password">
+          <template #label>
+            <span>密码</span>
+          </template>
           <el-input
             v-model="form.password"
             type="password"
             size="large"
-            :placeholder="isRegister ? '6-64 位密码' : '请输入密码'"
+            :placeholder="isRegister ? passwordPlaceholder : '请输入密码'"
             show-password
             @keyup.enter="onSubmit"
           >
@@ -80,6 +96,12 @@
               <el-icon><Lock /></el-icon>
             </template>
           </el-input>
+          <PasswordStrength v-if="isRegister" :password="form.password" :policy="policy" />
+          <div class="pwd-label">
+            <el-button v-if="!isRegister" link type="primary" class="forgot-link" @click="openReset">
+              忘记密码？
+            </el-button>
+          </div>
         </el-form-item>
         <el-form-item v-if="isRegister" label="确认密码" prop="confirmPassword">
           <el-input
@@ -119,22 +141,117 @@
       </div>
 
       <div v-if="!isRegister" class="demo-account">
-        <span>演示账号：admin / admin123</span>
+        <span>演示账号：admin / admin123 · 邮箱 admin@demo.local</span>
         <el-button link type="primary" size="small" @click="fillDemo">一键填入</el-button>
       </div>
     </section>
+
+    <el-dialog
+      v-model="resetVisible"
+      title="找回密码"
+      width="440px"
+      :close-on-click-modal="false"
+      @closed="onResetClosed"
+    >
+      <el-steps :active="resetStep" simple class="reset-steps">
+        <el-step title="验证身份" />
+        <el-step title="校验验证码" />
+        <el-step title="设置新密码" />
+      </el-steps>
+
+      <el-form v-if="resetStep === 0" label-position="top" @submit.prevent>
+        <el-form-item label="所属租户">
+          <el-select v-model="resetForm.tenantId" filterable style="width: 100%">
+            <el-option v-for="t in tenants" :key="t.id" :label="t.name" :value="t.id" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="用户名">
+          <el-input v-model="resetForm.username" placeholder="请输入用户名" clearable />
+        </el-form-item>
+        <el-form-item label="绑定邮箱">
+          <el-input v-model="resetForm.email" placeholder="请输入注册时绑定的邮箱" clearable />
+        </el-form-item>
+        <p class="reset-tip muted">将向绑定邮箱发送 6 位验证码，用于校验账号归属。</p>
+      </el-form>
+
+      <el-form v-else-if="resetStep === 1" label-position="top" @submit.prevent>
+        <el-form-item label="验证码">
+          <el-input
+            v-model="resetForm.code"
+            maxlength="6"
+            placeholder="请输入 6 位数字验证码"
+            @keyup.enter="onVerifyCode"
+          />
+        </el-form-item>
+        <el-alert v-if="demoCode" type="warning" :closable="false" show-icon class="demo-code">
+          <template #title>演示环境未配置 SMTP，验证码：{{ demoCode }}</template>
+        </el-alert>
+        <p class="reset-tip muted">验证码 {{ resetCodeSeconds }} 秒内有效，请勿泄露给他人。</p>
+      </el-form>
+
+      <el-form v-else label-position="top" @submit.prevent>
+        <el-form-item label="新密码">
+          <el-input v-model="resetForm.newPassword" type="password" show-password placeholder="请输入新密码">
+            <template #prefix>
+              <el-icon><Lock /></el-icon>
+            </template>
+          </el-input>
+          <PasswordStrength :password="resetForm.newPassword" :policy="policy" />
+        </el-form-item>
+        <el-form-item label="确认新密码">
+          <el-input
+            v-model="resetForm.confirmPassword"
+            type="password"
+            show-password
+            placeholder="请再次输入新密码"
+            @keyup.enter="onResetSubmit"
+          >
+            <template #prefix>
+              <el-icon><Lock /></el-icon>
+            </template>
+          </el-input>
+        </el-form-item>
+      </el-form>
+
+      <template #footer>
+        <el-button @click="resetVisible = false">取消</el-button>
+        <template v-if="resetStep === 0">
+          <el-button type="primary" :loading="resetLoading" @click="onSendCode">发送验证码</el-button>
+        </template>
+        <template v-else-if="resetStep === 1">
+          <el-button :disabled="countdown > 0" :loading="resetLoading" @click="onSendCode">
+            {{ countdown > 0 ? `重新发送(${countdown}s)` : '重新发送' }}
+          </el-button>
+          <el-button type="primary" :loading="resetLoading" @click="onVerifyCode">验证并下一步</el-button>
+        </template>
+        <template v-else>
+          <el-button @click="resetStep = 1">上一步</el-button>
+          <el-button type="primary" :loading="resetLoading" @click="onResetSubmit">确认重置</el-button>
+        </template>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
 
-import { fetchTenants, login, register } from '@/api/auth'
-import type { TenantOption } from '@/types/api'
+import {
+  fetchPasswordPolicy,
+  fetchTenants,
+  login,
+  register,
+  resetPassword,
+  sendResetCode,
+  verifyResetCode
+} from '@/api/auth'
+import PasswordStrength from '@/components/PasswordStrength.vue'
+import type { PasswordPolicy, TenantOption } from '@/types/api'
 import { DEFAULT_TENANT, saveSession, setTenant } from '@/store/auth'
+import { DEFAULT_PASSWORD_POLICY, passwordErrorMessage } from '@/utils/password'
 
 const router = useRouter()
 const route = useRoute()
@@ -146,6 +263,12 @@ const isRegister = computed(() => mode.value === 'register')
 
 const tenants = ref<TenantOption[]>([])
 const tenantLoading = ref(false)
+const policy = ref<PasswordPolicy>({ ...DEFAULT_PASSWORD_POLICY })
+const resetCodeSeconds = ref(300)
+
+const passwordPlaceholder = computed(
+  () => `需 ${policy.value.minLength}-${policy.value.maxLength} 位，至少 ${policy.value.minClasses} 类字符`
+)
 
 async function loadTenants(): Promise<void> {
   tenantLoading.value = true
@@ -163,14 +286,28 @@ async function loadTenants(): Promise<void> {
   }
 }
 
-onMounted(loadTenants)
+async function loadPolicy(): Promise<void> {
+  try {
+    policy.value = await fetchPasswordPolicy()
+  } catch {
+    // 接口异常时使用前端默认规则，登录/注册主流程不受影响
+  }
+}
+
+onMounted(() => {
+  loadTenants()
+  loadPolicy()
+})
+
+onBeforeUnmount(() => stopCountdown())
 
 const form = reactive({
   tenantId: DEFAULT_TENANT,
   username: '',
   password: '',
   confirmPassword: '',
-  displayName: ''
+  displayName: '',
+  email: ''
 })
 
 function validateConfirmPassword(
@@ -185,29 +322,42 @@ function validateConfirmPassword(
   }
 }
 
+function validatePolicyPassword(
+  _rule: unknown,
+  value: string,
+  callback: (error?: string | Error) => void
+): void {
+  const message = passwordErrorMessage(value, policy.value)
+  callback(message ? new Error(message) : undefined)
+}
+
 const loginRules: FormRules = {
   tenantId: [{ required: true, message: '请选择所属租户', trigger: 'change' }],
   username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
   password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
 }
 
-const registerRules: FormRules = {
+const registerRules = computed<FormRules>(() => ({
   tenantId: [{ required: true, message: '请选择所属租户', trigger: 'change' }],
   username: [
     { required: true, message: '请输入用户名', trigger: 'blur' },
     { pattern: /^[A-Za-z0-9_]{3,32}$/, message: '用户名需为 3-32 位字母、数字或下划线', trigger: 'blur' }
   ],
+  email: [
+    { required: true, message: '请输入绑定邮箱', trigger: 'blur' },
+    { type: 'email', message: '邮箱格式不正确', trigger: 'blur' }
+  ],
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 6, max: 64, message: '密码长度需为 6-64 位', trigger: 'blur' }
+    { validator: validatePolicyPassword, trigger: 'blur' }
   ],
   confirmPassword: [
     { required: true, message: '请再次输入密码', trigger: 'blur' },
     { validator: validateConfirmPassword, trigger: 'blur' }
   ]
-}
+}))
 
-const activeRules = computed(() => (isRegister.value ? registerRules : loginRules))
+const activeRules = computed(() => (isRegister.value ? registerRules.value : loginRules))
 
 function switchMode(next: 'login' | 'register'): void {
   mode.value = next
@@ -233,11 +383,12 @@ async function onSubmit(): Promise<void> {
       ? await register({
           username,
           password: form.password,
-          displayName: form.displayName.trim() || undefined
+          displayName: form.displayName.trim() || undefined,
+          email: form.email.trim()
         })
       : await login(username, form.password)
-    saveSession(result.token, result.username)
-    setTenant(form.tenantId)
+    saveSession(result.token, result.username, result.role, result.tenantId || form.tenantId)
+    setTenant(result.tenantId || form.tenantId)
     ElMessage.success(isRegister.value ? '注册成功，已自动登录' : '登录成功')
     const redirect = (route.query.redirect as string) || '/files'
     await router.replace(redirect)
@@ -245,6 +396,142 @@ async function onSubmit(): Promise<void> {
     ElMessage.error(error instanceof Error ? error.message : (isRegister.value ? '注册失败' : '登录失败'))
   } finally {
     loading.value = false
+  }
+}
+
+// ---------------- 找回密码 ----------------
+const resetVisible = ref(false)
+const resetStep = ref(0)
+const resetLoading = ref(false)
+const resetTicket = ref('')
+const demoCode = ref('')
+const countdown = ref(0)
+let countdownTimer: number | undefined
+
+const resetForm = reactive({
+  tenantId: DEFAULT_TENANT,
+  username: '',
+  email: '',
+  code: '',
+  newPassword: '',
+  confirmPassword: ''
+})
+
+function openReset(): void {
+  resetStep.value = 0
+  resetTicket.value = ''
+  demoCode.value = ''
+  countdown.value = 0
+  resetForm.tenantId = form.tenantId || DEFAULT_TENANT
+  resetForm.username = form.username.trim()
+  resetForm.email = ''
+  resetForm.code = ''
+  resetForm.newPassword = ''
+  resetForm.confirmPassword = ''
+  resetVisible.value = true
+}
+
+function onResetClosed(): void {
+  stopCountdown()
+  countdown.value = 0
+}
+
+function startCountdown(seconds: number): void {
+  stopCountdown()
+  countdown.value = seconds
+  countdownTimer = window.setInterval(() => {
+    countdown.value -= 1
+    if (countdown.value <= 0) {
+      stopCountdown()
+    }
+  }, 1000)
+}
+
+function stopCountdown(): void {
+  if (countdownTimer !== undefined) {
+    window.clearInterval(countdownTimer)
+    countdownTimer = undefined
+  }
+}
+
+function resetError(message: unknown): void {
+  ElMessage.error(message instanceof Error ? message.message : '操作失败，请稍后重试')
+}
+
+async function onSendCode(): Promise<void> {
+  const username = resetForm.username.trim()
+  const email = resetForm.email.trim()
+  if (!username) {
+    ElMessage.warning('请输入用户名')
+    return
+  }
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    ElMessage.warning('请输入正确的绑定邮箱')
+    return
+  }
+  resetLoading.value = true
+  try {
+    const result = await sendResetCode({ tenantId: resetForm.tenantId, username, email })
+    demoCode.value = result.demoCode || ''
+    resetCodeSeconds.value = result.expiresInSeconds || 300
+    resetStep.value = 1
+    startCountdown(60)
+    ElMessage.success(result.delivered ? '验证码已发送至绑定邮箱' : '演示环境验证码已生成，请查看下方提示')
+  } catch (error) {
+    resetError(error)
+  } finally {
+    resetLoading.value = false
+  }
+}
+
+async function onVerifyCode(): Promise<void> {
+  if (!/^\d{6}$/.test(resetForm.code.trim())) {
+    ElMessage.warning('请输入 6 位数字验证码')
+    return
+  }
+  resetLoading.value = true
+  try {
+    resetTicket.value = await verifyResetCode({
+      tenantId: resetForm.tenantId,
+      username: resetForm.username.trim(),
+      email: resetForm.email.trim(),
+      code: resetForm.code.trim()
+    })
+    resetStep.value = 2
+    ElMessage.success('验证码校验通过，请设置新密码')
+  } catch (error) {
+    resetError(error)
+  } finally {
+    resetLoading.value = false
+  }
+}
+
+async function onResetSubmit(): Promise<void> {
+  const message = passwordErrorMessage(resetForm.newPassword, policy.value)
+  if (message) {
+    ElMessage.warning(message)
+    return
+  }
+  if (resetForm.newPassword !== resetForm.confirmPassword) {
+    ElMessage.warning('两次输入的新密码不一致')
+    return
+  }
+  resetLoading.value = true
+  try {
+    await resetPassword({
+      tenantId: resetForm.tenantId,
+      username: resetForm.username.trim(),
+      resetTicket: resetTicket.value,
+      newPassword: resetForm.newPassword
+    })
+    ElMessage.success('密码重置成功，请使用新密码登录')
+    resetVisible.value = false
+    form.username = resetForm.username.trim()
+    form.password = ''
+  } catch (error) {
+    resetError(error)
+  } finally {
+    resetLoading.value = false
   }
 }
 </script>
@@ -374,6 +661,19 @@ async function onSubmit(): Promise<void> {
   margin: 0;
 }
 
+.pwd-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 110%;
+}
+
+.forgot-link {
+  height: auto;
+  padding: 0;
+  font-size: 12px;
+}
+
 .submit-btn {
   width: 100%;
   margin-top: 6px;
@@ -394,11 +694,26 @@ async function onSubmit(): Promise<void> {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
   margin-top: 14px;
   padding-top: 14px;
   border-top: 1px dashed var(--border);
   font-size: 12px;
   color: var(--muted);
+}
+
+.reset-steps {
+  margin-bottom: 18px;
+}
+
+.reset-tip {
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.demo-code {
+  margin-top: 4px;
 }
 
 @media (max-width: 900px) {

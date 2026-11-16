@@ -36,6 +36,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         UserContext.setUsername(payload.username());
+        UserContext.setRole(payload.role());
         // 以 Token 内的租户为准，避免通过请求头越权访问其他租户数据
         TenantContext.setTenantId(payload.tenantId());
         log.debug("认证通过: {} (tenant={})", payload.username(), payload.tenantId());

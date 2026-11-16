@@ -7,11 +7,64 @@ export interface ApiResult<T> {
 export interface LoginResult {
   token: string
   username: string
+  tenantId: string
+  role: string
+  displayName?: string | null
+  permissions?: string[]
 }
 
 export interface TenantOption {
   id: string
   name: string
+}
+
+export interface TenantUser {
+  id: number
+  username: string
+  display_name: string | null
+  email: string | null
+  status: string
+  role: string
+  last_login_at: string | null
+}
+
+export interface RoleConfig {
+  code: string
+  name: string
+  description: string | null
+  status: string
+  isBuiltin: boolean
+}
+
+export interface TenantItem extends TenantOption {
+  description: string | null
+  status: string
+  sortOrder: number
+  userCount: number
+  createdAt: string
+  updatedAt: string
+}
+
+export interface TenantPayload {
+  id?: string
+  name: string
+  description?: string
+  status: string
+  sortOrder?: number
+}
+
+export interface PasswordPolicy {
+  minLength: number
+  maxLength: number
+  minClasses: number
+  classes: string[]
+  hint: string
+}
+
+export interface ForgotCodeResult {
+  delivered: boolean
+  demoCode: string | null
+  expiresInSeconds: number
 }
 
 export interface DocumentItem {
